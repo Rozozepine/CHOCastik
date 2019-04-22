@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Box?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.calibration.CalibrationController">
+   <children>
+      <ImageView fx:id="RetourCalib" fitHeight="242.0" fitWidth="392.0" layoutX="104.0" layoutY="99.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="248.0" layoutY="14.0" text="Calibrage">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Label>
+      <Button layoutX="183.0" layoutY="355.0" mnemonicParsing="false" onMouseClicked="#TakePicture" text="photo" />
+      <Button fx:id="BGo" layoutX="371.0" layoutY="355.0" mnemonicParsing="false" onMouseClicked="#GoStartAnalyse" text="GO!" />
+      <Label layoutX="14.0" layoutY="56.0" prefHeight="17.0" prefWidth="308.0" text="Posez la mire sur la table et  prenez une photo " />
+      <Label layoutX="15.0" layoutY="44.0" text="Déplacez la mire et prenez une photo" />
+      <Label layoutX="14.0" layoutY="67.0" text="recommencez quand le calibrage est fini, un bouton apparaitera" />
+      <Box cullFace="FRONT" depth="100" height="243.0" layoutX="300.0" layoutY="220.0" width="392.0" />
+   </children>
+</AnchorPane>
