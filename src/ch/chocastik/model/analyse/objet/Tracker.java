@@ -17,6 +17,8 @@ import static org.bytedeco.javacpp.opencv_imgproc.cvErode;
 import static org.bytedeco.javacpp.opencv_imgproc.cvHoughCircles;
 import static org.bytedeco.javacpp.opencv_imgproc.cvSmooth;
 
+import java.util.ArrayList;
+
 import org.bytedeco.javacpp.opencv_core.CvMemStorage;
 import org.bytedeco.javacpp.opencv_core.CvPoint;
 import org.bytedeco.javacpp.opencv_core.CvPoint2D32f;
@@ -29,9 +31,12 @@ import org.bytedeco.javacv.OpenCVFrameConverter;
 
 public class Tracker {
 	private OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
-	Mobile mobile;
+	private Mobile mobile;
+	private ArrayList<Trajectoire> listOfTrajectoire;
+	
 	public Tracker(Mobile mobile) {
 		this.mobile = mobile;
+		
 	}
 	public void detectCircle(Frame frame) {
 		CvMemStorage mem = CvMemStorage.create();
