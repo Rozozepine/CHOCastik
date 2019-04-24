@@ -46,4 +46,7 @@ public class Point {
 	public void setX(int x) {
 		this.x = x;
 	}
+	public double getDistance(Point point) {
+		return Math.sqrt((point.getX() - this.x)^2 + (point.getY()-this.y)^2);
+	}
 }

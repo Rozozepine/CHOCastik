@@ -12,10 +12,14 @@ public class Referentiel {
 		this.maxPixelX = maxPixelX;
 		this.maxPixelY = maxPixelY;
 	}
-	public boolean checkCordonne(int x, int y) {
-		if(x > maxPixelX || y > maxPixelY || x < pixelXOrigine || y <pixelYOrigine)
+	public boolean checkCordonne(Point point) {
+		if(point.getX() > maxPixelX || point.getY() > maxPixelY || point.getX() < pixelXOrigine || point.getY() <pixelYOrigine)
 			return false;
 		return true;
+	}
+	public void transformToRelatif(Point point) {
+		point.setX(point.getX() - this.pixelXOrigine);
+		point.setY(point.getY() - this.pixelYOrigine);
 	}
 	
 }

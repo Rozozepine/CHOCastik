@@ -45,6 +45,7 @@ public class Mobile {
     private  int maxRad = 20;
     private  int minRad = 1;
     private int tolHue = 10;
+    private int nbMobile;
     
 	public Mobile(Color color, String name) {
 		this.nameExport = new SimpleStringProperty(name);
@@ -114,6 +115,12 @@ public class Mobile {
 	}
 	public void setHsvMin(CvScalar hsvMin) {
 		this.hsvMin = hsvMin;
+	}
+	public int getNbMobile() {
+		return nbMobile;
+	}
+	public void setNbMobile(int nbMobile) {
+		this.nbMobile = nbMobile;
 	}
 
 }
