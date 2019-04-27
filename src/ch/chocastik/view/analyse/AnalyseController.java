@@ -1,4 +1,6 @@
 package ch.chocastik.view.analyse;
+import static org.bytedeco.javacpp.opencv_core.IPL_DEPTH_8U;
+
 import static org.bytedeco.javacpp.opencv_core.cvCreateImage;
 import org.bytedeco.javacpp.*;
 
@@ -82,7 +84,7 @@ public class AnalyseController {
 	private Timer timer;
 	private  Iterator it;
 	private ConcurrentLinkedQueue<IplImage> pileFrame;
-	private int choiceCam;
+	private CameraDevice choiceCam;
    // Methode JavaFX
     @FXML
     private void initialize() {
@@ -148,8 +150,8 @@ public class AnalyseController {
 	        this.cam = this.mainApp.getCam();
 	        this.pileFrame = mainApp.getPileImage();
 	}
-	public void dsetCameraChoice(int nb) {
-		this.choiceCam = nb;
+	public void dsetCameraChoice(CameraDevice cam) {
+		this.choiceCam = cam;
 	}
 	/**
 	 * bloque ou debloque tout les menu 
@@ -175,8 +177,8 @@ public class AnalyseController {
 	public void threadCam() {
   	   playThread = new Thread(new Runnable() { public void run() {
   		   try {
-  			   
-  			  final FrameGrabber grabber = new OpenCVFrameGrabber(choiceCam); // on crée le grabber 
+  			  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
+  			  final FrameGrabber grabber = new OpenCVFrameGrabber(setting.getDeviceNumber()); // on crée le grabber 
   			  final Java2DFrameConverter converter = new Java2DFrameConverter();
   			  final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
   			  Frame frame = new Frame();
@@ -191,6 +193,8 @@ public class AnalyseController {
                		 break;
               	  }else {
               		 IplImage grabbedImage = converterToIplImage.convert(frame);
+              		 grabbedImage = choiceCam.undistort(grabbedImage);
+              		 frame = converterToIplImage.convert(grabbedImage);
               		 traitement(grabbedImage);
               		 image = SwingFXUtils.toFXImage(converter.convert(frame), null);
               		 Platform.runLater(() -> {

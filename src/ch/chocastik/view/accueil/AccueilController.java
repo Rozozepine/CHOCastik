@@ -3,10 +3,15 @@ package ch.chocastik.view.accueil;
 
 
 
+import java.beans.PropertyVetoException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.bytedeco.javacpp.videoInputLib.videoInput;
+import org.bytedeco.javacv.CameraDevice;
+import org.bytedeco.javacv.CameraSettings;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.ProjectiveDevice.Exception;
 
 import ch.chocastik.controller.MainApp;
 import javafx.event.ActionEvent;
@@ -26,22 +31,30 @@ public class AccueilController {
 	private SplitMenuButton SelectionCam; // Value injected by FXMLLoader
 	@FXML // fx:id="BStartAcc"
 	private Button BStartAcc; // Value injected by FXMLLoader
+	
 	private MainApp mainApp;
 	private int choice;
+	static CameraSettings cameraSettings = new CameraSettings();
+	static CameraDevice cameraDevices = null;
+
+	
 	public void AccueilController() {}
 	@FXML
-	public void OpenCalib(MouseEvent event) {
-		this.mainApp.showCalibration(choice);
+	public void OpenCalib(MouseEvent event) throws Exception, PropertyVetoException {
+		CameraDevice.Settings[] cs= cameraSettings.toArray();
+		cs[this.choice].setFrameGrabber(FrameGrabber.getDefault());
+   	 	cameraDevices = new CameraDevice(cs[this.choice]);    	 
+		this.mainApp.showCalibration(cameraDevices);
 	}
 		
 	public void setMainApp(MainApp mainApp) {
 	   this.mainApp = mainApp;
 	}
     @FXML
-    private void initialize() {
+    private void initialize() throws PropertyVetoException{
     	int n = videoInput.listDevices();
+    	cameraSettings.setQuantity(n);  
 		for (int i = 0; i < n; i++) {
-			
 			MenuItem menuItem = new MenuItem("Device "+i+" : " +videoInput.getDeviceName(i).getString());
 			menuItem.setId(Integer.toString(i));
 			menuItem.setOnAction(createChoiceHandler(i));
@@ -53,7 +66,7 @@ public class AccueilController {
     }
     private void setChoice(int index) {
     	this.choice = index;
-    	System.out.println(index);
+    	
     }
 
 }

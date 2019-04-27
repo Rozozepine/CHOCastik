@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.opencv_core.IplImage;
 import org.bytedeco.javacpp.opencv_objdetect;
+import org.bytedeco.javacv.CameraDevice;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.MarkedPlane;
 import org.bytedeco.javacv.Marker;
@@ -83,25 +84,25 @@ public class MainApp extends Application {
 			e.printStackTrace();
 		}
 	}
-	public void showAnalyse(int indexCam) {
+	public void showAnalyse(CameraDevice cam) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/analyse/AnalyseFX.fxml"));
 			AnchorPane analyse = (AnchorPane) loader.load();
 			rootLayout.setCenter(analyse);
 			AnalyseController controller = loader.getController();
 			controller.setMainApp(this);
-			controller.dsetCameraChoice(indexCam);
+			controller.dsetCameraChoice(cam);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	public void showCalibration(int indexCam) {
+	public void showCalibration(CameraDevice cam) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/calibration/CalibrationFX.fxml"));
 			AnchorPane calibration = (AnchorPane) loader.load();
 			rootLayout.setCenter(calibration);
 			CalibrationController controller = loader.getController();
-			controller.dsetCameraChoice(indexCam);
+			controller.dsetCameraChoice(cam);
 			controller.setMainApp(this);
 		}catch(Exception e) {
 			e.printStackTrace();
