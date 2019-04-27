@@ -47,9 +47,9 @@ public class Mobile {
     private int tolHue = 10;
     private int nbMobile;
     
-	public Mobile(Color color, String name) {
+	public Mobile(Color color2, String name) {
 		this.nameExport = new SimpleStringProperty(name);
-		this.setColor(new SimpleObjectProperty<Color>(color));
+		this.setColor(new SimpleObjectProperty<Color>(color2));
 	}	
 	public ObjectProperty<Color> colorProperty() {
 		return color;

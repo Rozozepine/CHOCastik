@@ -1,22 +1,30 @@
 package ch.chocastik.controller;
 
-
+import ch.chocastik.model.analyse.objet.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.opencv_core.IplImage;
 import org.bytedeco.javacpp.opencv_objdetect;
+import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.MarkedPlane;
 import org.bytedeco.javacv.Marker;
 import org.bytedeco.javacv.MarkerDetector;
 import org.bytedeco.javacv.ProjectorSettings;
 import org.opencv.core.*;
 
-import ch.chocastik.model.Mobile.Mobile;
+
 import ch.chocastik.model.cameras.Camera;
 import ch.chocastik.view.accueil.AccueilController;
+import ch.chocastik.view.analyse.AddGlisseurController;
+import ch.chocastik.view.analyse.AddReferentielleController;
+import ch.chocastik.view.analyse.AnalyseController;
+import ch.chocastik.view.analyse.EditGlisseurController;
 import ch.chocastik.view.calibration.CalibrationController;
-import ch.chocastik.view.start_analyse.AnalyseController;
-import ch.chocastik.view.start_analyse.EditGlisseurController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -25,6 +33,7 @@ import javafx.collections.ObservableList;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -37,8 +46,11 @@ public class MainApp extends Application {
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private ObservableList<Mobile> mobileData = FXCollections.observableArrayList();
+	private Referentiel referentiel = new Referentiel();
+	private ArrayList<Tracker> listTraker = new ArrayList<Tracker>();
+	private Mesure mesure = new Mesure();
 	private Camera cam;
-
+	private ConcurrentLinkedQueue<IplImage> pileImage = new ConcurrentLinkedQueue<IplImage>();
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -73,7 +85,7 @@ public class MainApp extends Application {
 	}
 	public void showAnalyse(int indexCam) {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/start_analyse/AnalyseFX.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/analyse/AnalyseFX.fxml"));
 			AnchorPane analyse = (AnchorPane) loader.load();
 			rootLayout.setCenter(analyse);
 			AnalyseController controller = loader.getController();
@@ -95,42 +107,114 @@ public class MainApp extends Application {
 			e.printStackTrace();
 		}
 	}
-	public boolean showEditGlisseur(Mobile mobile, Image frame) {
+	public void showEditGlisseur(Image frame) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("/ch/chocastik/view/start_analyse/EditGlisseurFX.fxml"));
-			AnchorPane page = (AnchorPane) loader.load();
+			loader.setLocation(MainApp.class.getResource("/ch/chocastik/view/analyse/EditGlisseurFX.fxml"));
+			SplitPane page = (SplitPane) loader.load();
 			Stage dialogueStage = new Stage();
 			dialogueStage.setTitle("Edit Glisseur");
 			dialogueStage.initModality(Modality.WINDOW_MODAL);
 			dialogueStage.initOwner(primaryStage);
 	        Scene scene = new Scene(page);
 	        dialogueStage.setScene(scene);
-	        EditGlisseurController controller = loader.getController();
-	        controller.setDialogueStage(dialogueStage);
-	        controller.setMobile(mobile);
-	        controller.setFrame(frame);
+	        EditGlisseurController controleur = loader.getController();
+	        controleur.setMainApp(this);
+	        controleur.setFrame(frame);
 	        dialogueStage.showAndWait();
-	        return controller.isOkClicked();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * Fonction affichant la fenetre de modification et d'ajout d'un mobile
+	 * @return boolean
+	 */
+	public boolean showAddGlisseur(Mobile mobile, Image frame) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("/ch/chocastik/view/analyse/AddGlisseurFX.fxml"));
+			AnchorPane page = (AnchorPane) loader.load();
+			Stage dialogueStage = new Stage();
+			dialogueStage.setTitle("Add Glisseur");
+			dialogueStage.initModality(Modality.WINDOW_MODAL);
+			dialogueStage.initOwner(primaryStage);
+	        Scene scene = new Scene(page);
+	        dialogueStage.setScene(scene);
+	        AddGlisseurController controleur = loader.getController();
+	        controleur.setDialogueStage(dialogueStage);
+	        controleur.setFrame(frame);
+	        controleur.setMobile(mobile);
+	        dialogueStage.showAndWait();
+	        return controleur.isOkClicked();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	/**
+	 * Fonction affichant la fenetre de modification et d'ajout d'un Referentiel
+	 * @return boolean
+	 */
+	public boolean showAddReferentiel(Image frame) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("/ch/chocastik/view/analyse/AddReferentielleFX.fxml"));
+			AnchorPane page = (AnchorPane) loader.load();
+			Stage dialogueStage = new Stage();
+			dialogueStage.setTitle("Add Referentielle");
+			dialogueStage.initModality(Modality.WINDOW_MODAL);
+			dialogueStage.initOwner(primaryStage);
+	        Scene scene = new Scene(page);
+	        dialogueStage.setScene(scene);
+	        AddReferentielleController controleur = loader.getController();
+	        controleur.setDialogueStage(dialogueStage);
+	        controleur.setFrame(frame);
+	        controleur.setReferentiel(this.getReferentiel());
+	        dialogueStage.showAndWait();
+	        return controleur.isOkClicked();
 		}catch(Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
 	
+	// Get et Set 
+	public Mesure getMesure() {
+		return mesure;
+	}
+	public void setMesure(Mesure mesure) {
+		this.mesure = mesure;
+	}
+	public Referentiel getReferentiel() {
+		return referentiel;
+	}
+	public void setReferentiel(Referentiel referentiel) {
+		this.referentiel = referentiel;
+	}
     public Stage getPrimaryStage() {
         return primaryStage;
     }
 	public ObservableList<Mobile> getMobileData() {
 		return mobileData;
 	}
+
+	public Camera getCam() {
+		return cam;
+	}
+	
+	public ConcurrentLinkedQueue<IplImage>  getPileImage(){
+		return this.pileImage;
+	}
+	
+	/**
+	 *  Fonction Main
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		 Loader.load(opencv_objdetect.class);
 		
 		launch(args);
-	}
-	public Camera getCam() {
-		return cam;
 	}
 }

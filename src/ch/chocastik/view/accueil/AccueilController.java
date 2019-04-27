@@ -2,6 +2,7 @@ package ch.chocastik.view.accueil;
 
 
 
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -40,6 +41,7 @@ public class AccueilController {
     private void initialize() {
     	int n = videoInput.listDevices();
 		for (int i = 0; i < n; i++) {
+			
 			MenuItem menuItem = new MenuItem("Device "+i+" : " +videoInput.getDeviceName(i).getString());
 			menuItem.setId(Integer.toString(i));
 			menuItem.setOnAction(createChoiceHandler(i));
