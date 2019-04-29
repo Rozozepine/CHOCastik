@@ -2,7 +2,9 @@ package ch.chocastik.view.analyse;
 import static org.bytedeco.javacpp.opencv_core.IPL_DEPTH_8U;
 
 import static org.bytedeco.javacpp.opencv_core.cvCreateImage;
+import static org.bytedeco.javacpp.opencv_core.*;
 import org.bytedeco.javacpp.*;
+
 
 import java.net.URL;
 import java.util.Iterator;
@@ -19,6 +21,7 @@ import org.opencv.core.Mat;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.IplImage;
+import org.bytedeco.javacpp.opencv_imgproc.CvFont;
 import org.bytedeco.javacpp.opencv_objdetect;
 import org.bytedeco.javacv.*;
 import org.bytedeco.javacv.BufferRing.ReleasableBuffer;
@@ -26,7 +29,7 @@ import org.bytedeco.javacv.FrameGrabber.Exception;
 
 import ch.chocastik.controller.MainApp;
 
-import ch.chocastik.model.cameras.Camera;
+
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -38,14 +41,22 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import ch.chocastik.model.analyse.Analyse;
 import ch.chocastik.model.analyse.objet.*;
+import ch.chocastik.model.analyse.objet.Point;
+import static org.bytedeco.javacpp.opencv_imgproc.cvPutText;
+import static org.bytedeco.javacpp.opencv_imgproc.cvInitFont;
+import static org.bytedeco.javacpp.opencv_imgproc.CV_FONT_HERSHEY_PLAIN;
+
 public class AnalyseController {
 	// attribut FXML
     @FXML
@@ -72,12 +83,14 @@ public class AnalyseController {
     private NumberAxis AxeX;
     @FXML
     private NumberAxis AxeY;
+    @FXML 
+    private TabPane tabPane;
     
     // Attribut de l'Objet
     private static volatile Thread playThread;
     private static volatile Thread analyseThread;
     private Image image;
-    private Camera cam;
+
     private Mat frame = new Mat();
 	private boolean videoIsActive = false;
 	private boolean analyseIsActive = false;
@@ -85,6 +98,8 @@ public class AnalyseController {
 	private  Iterator it;
 	private ConcurrentLinkedQueue<IplImage> pileFrame;
 	private CameraDevice choiceCam;
+	final Java2DFrameConverter converter = new Java2DFrameConverter();
+	final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
    // Methode JavaFX
     @FXML
     private void initialize() {
@@ -116,7 +131,8 @@ public class AnalyseController {
     		
     	}else {
     		if(!mainApp.getMobileData().isEmpty() &&  mainApp.getReferentiel() != null &&  mainApp.getMesure() != null) {
-    			analyseThread = new Thread(new Analyse(mainApp, this.graphiquePoint));
+    			creatDataGraph();
+    			analyseThread = new Thread(new Analyse(mainApp));
     			analyseThread.start();
     			this.setMenuDisable(true);
     			this.analyseIsActive = true;
@@ -139,7 +155,60 @@ public class AnalyseController {
 	public void handleReferentiel() {
 		mainApp.showAddReferentiel(image);
 	}
-    
+	@FXML
+	public void handleExportAll() {
+		if(mainApp.getPileImage().isEmpty()) {
+			for(Tracker tracker: mainApp.getListTraker()) 
+				tracker.getTrajectoire().exportTrajectoire();
+		}
+		
+	}
+	
+	public void showFrame(Point point) {
+		if(!analyseIsActive) {
+			final CvFont font = new CvFont(); 
+		    if(this.videoIsActive) {
+		    	   playThread.interrupt();
+		    	   this.videoIsActive= false;
+		    	   this.Startvideo.setText("Start");
+		    }
+        	IplImage dessin = cvCloneImage(point.getFrame());
+        	cvInitFont(font, CV_FONT_HERSHEY_PLAIN,0.5, 0.5);
+        	cvPutText(dessin, "Mobile", cvPoint((int) point.getX(),(int) point.getY()), font, CvScalar.GREEN); 
+        	Frame frame = converterToIplImage.convert(dessin);
+    		Image image = SwingFXUtils.toFXImage(converter.convert(frame), null);
+        	RetourCam.setImage(image);
+     		
+		}
+	}
+
+	private void creatDataGraph() {
+		for(Mobile mob: mainApp.getMobileData()) {	
+			XYChart.Series<Number, Number> series = new XYChart.Series<>();
+			series.setName(mob.getName()); // TODO Regler probléme ajout de données
+			graphiquePoint.getData().add(series);
+			Tab tab = new Tab();
+			tab.setText(mob.getName());
+		
+			Tracker tracker = new Tracker(mob, mainApp.getReferentiel(), series);
+			TableView<Point> table = new TableView<Point>();
+			TableColumn<Point,Float> xCol = new TableColumn<Point, Float>("X");
+			TableColumn<Point,Float> yCol = new TableColumn<Point,Float>("Y");
+			TableColumn<Point,Integer> timeCol = new TableColumn<Point,Integer>("timestamp");
+			table.setItems(tracker.getTrajectoire().getListOfPoint());
+			xCol.setCellValueFactory(cellData -> cellData.getValue().xProperty().asObject());
+			yCol.setCellValueFactory(cellData -> cellData.getValue().yProperty().asObject());
+			timeCol.setCellValueFactory(cellData -> cellData.getValue().timeProperty().asObject());
+			table.getColumns().addAll(timeCol, xCol, yCol);
+			table.getSelectionModel().selectedItemProperty().addListener(
+		            (observable, oldValue, newValue) -> showFrame(newValue));
+			
+			tab.setContent(table);
+			tabPane.getTabs().add(tab);	
+			mainApp.getListTraker().add(tracker);
+			
+		}
+	}
     //Get et Set
 	/**
 	 * Permet de mettre en place la mainApp
@@ -147,14 +216,14 @@ public class AnalyseController {
 	 */
 	public void setMainApp(MainApp mainApp) {
 	        this.mainApp = mainApp;
-	        this.cam = this.mainApp.getCam();
+
 	        this.pileFrame = mainApp.getPileImage();
 	}
 	public void dsetCameraChoice(CameraDevice cam) {
 		this.choiceCam = cam;
 	}
 	/**
-	 * bloque ou debloque tout les menu 
+	 * bloque ou debloque tout les menu
 	 */
 	private void setMenuDisable(boolean value) {
 		this.itemMesure.setDisable(value);
@@ -179,12 +248,10 @@ public class AnalyseController {
   		   try {
   			  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
   			  final FrameGrabber grabber = new OpenCVFrameGrabber(setting.getDeviceNumber()); // on crée le grabber 
-  			  final Java2DFrameConverter converter = new Java2DFrameConverter();
-  			  final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
   			  Frame frame = new Frame();
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
   			  grabber.start(); // on le démarre 
-  			  conteneur.setMinWidth(grabber.getImageWidth());
+  			  conteneur.setMinWidth(grabber.getImageWidth()); 
   			  conteneur.setMinHeight(grabber.getImageHeight());
 
               while(!Thread.interrupted()) {

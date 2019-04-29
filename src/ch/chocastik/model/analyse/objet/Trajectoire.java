@@ -1,14 +1,19 @@
 package ch.chocastik.model.analyse.objet;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 public class Trajectoire {
-	private ArrayList<Point> listOfPoint;
+	private ObservableList<Point> listOfPoint = FXCollections.observableArrayList();
 	private Referentiel referentiel;
 	private Mobile mobile;
 	private int distanceMin;
 	public Trajectoire(Referentiel referentiel, Mobile mobile) {
-		this.listOfPoint = new ArrayList<Point>();
+	
 		this.distanceMin = 10;
 		this.referentiel = referentiel;
 		this.mobile = mobile;
@@ -34,6 +39,18 @@ public class Trajectoire {
 			return true;
 		}
 	}
+	public void exportTrajectoire() {
+		try {
+			PrintWriter writer = new PrintWriter("C:\\Users\\Rose\\Documents\\Projet\\Unige\\CHOCastik\\Resultat\\"+mobile.getName()+".txt");
+			for(Point point: listOfPoint) {
+				writer.println(point.getTimecode()+":"+point.getX()+":"+point.getY());
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public Mobile getMobile() {
 		return mobile;
 	}
@@ -46,10 +63,10 @@ public class Trajectoire {
 	public void setReferentiel(Referentiel referentiel) {
 		this.referentiel = referentiel;
 	}
-	public ArrayList<Point> getListOfPoint() {
+	public ObservableList<Point> getListOfPoint() {
 		return listOfPoint;
 	}
-	public void setListOfPoint(ArrayList<Point> listOfPoint) {
+	public void setListOfPoint(ObservableList<Point> listOfPoint) {
 		this.listOfPoint = listOfPoint;
 	}
 	public int getDistanceMin() {

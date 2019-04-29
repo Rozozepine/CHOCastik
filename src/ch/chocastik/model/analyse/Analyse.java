@@ -12,6 +12,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+
 import static org.bytedeco.javacpp.opencv_core.cvReleaseImage;
 
 public class Analyse implements Runnable {
@@ -20,31 +25,27 @@ public class Analyse implements Runnable {
 	private Referentiel referentiel;
 	private Mesure mesure;
 	private ConcurrentLinkedQueue<IplImage> pileFrame;
+	private long startTime;
 	
-	public Analyse(MainApp mainApp, ScatterChart<Number,Number> graphique) {
-		this.listTraker = new ArrayList<Tracker>();
+	public Analyse(MainApp mainApp) {
+		this.listTraker = mainApp.getListTraker();
 		this.mobileData = mainApp.getMobileData();
 		this.referentiel = mainApp.getReferentiel();
 		this.mesure = mainApp.getMesure();
 		this.pileFrame = mainApp.getPileImage();
-		for(Mobile mob: mobileData) {
-			XYChart.Series<Number, Number> series = new XYChart.Series<>();
-			series.setName(mob.getName());
-			graphique.getData().add(series);
-			listTraker.add(new Tracker(mob, this.referentiel, series));
-		}
+		this.startTime = System.currentTimeMillis();
 	}
 
 	@Override
 	public void run() {
 		//tant que le Thread n'est pas stoppée on repete l'action
-		while(!Thread.interrupted()) {
+		while(!Thread.interrupted() || !pileFrame.isEmpty()) {
 			IplImage frame = pileFrame.poll(); 
 			if(frame != null) {
 				for(Tracker trac: listTraker) 
 					trac.detectCircle(frame, 0);
 			}
-		}
+		}	
 	}
 		
 	//Get et Set

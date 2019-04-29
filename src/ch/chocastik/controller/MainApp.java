@@ -19,7 +19,7 @@ import org.bytedeco.javacv.ProjectorSettings;
 import org.opencv.core.*;
 
 
-import ch.chocastik.model.cameras.Camera;
+
 import ch.chocastik.view.accueil.AccueilController;
 import ch.chocastik.view.analyse.AddGlisseurController;
 import ch.chocastik.view.analyse.AddReferentielleController;
@@ -50,7 +50,6 @@ public class MainApp extends Application {
 	private Referentiel referentiel = new Referentiel();
 	private ArrayList<Tracker> listTraker = new ArrayList<Tracker>();
 	private Mesure mesure = new Mesure();
-	private Camera cam;
 	private ConcurrentLinkedQueue<IplImage> pileImage = new ConcurrentLinkedQueue<IplImage>();
 	@Override
 	public void start(Stage primaryStage) {
@@ -200,14 +199,15 @@ public class MainApp extends Application {
 		return mobileData;
 	}
 
-	public Camera getCam() {
-		return cam;
-	}
-	
 	public ConcurrentLinkedQueue<IplImage>  getPileImage(){
 		return this.pileImage;
 	}
-	
+	public ArrayList<Tracker> getListTraker() {
+		return listTraker;
+	}
+	public void setListTraker(ArrayList<Tracker> listTraker) {
+		this.listTraker = listTraker;
+	}
 	/**
 	 *  Fonction Main
 	 * @param args

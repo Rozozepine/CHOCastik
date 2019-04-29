@@ -45,7 +45,7 @@ public class Tracker {
 		this.mobile = mobile;
 		this.referentiel = referentiel;
 		this.series = series;
-		
+		this.trajectoire = new Trajectoire(referentiel, mobile);
 	}
 	
 	public void detectCircle(IplImage imgSrc, int timecode) {
