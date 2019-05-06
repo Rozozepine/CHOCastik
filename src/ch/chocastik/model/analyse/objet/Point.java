@@ -5,35 +5,28 @@ import org.bytedeco.javacv.Frame;
 
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 
 public class Point {
 	private SimpleFloatProperty x;
 	private SimpleFloatProperty y;
-	private IplImage frame;
-	private SimpleIntegerProperty timecode;
+	private SimpleLongProperty timecode;
 
-	public Point(float x, float y,IplImage frame, int timecode) {
+	public Point(float x, float y, long timecode) {
 		this.x = new SimpleFloatProperty(x);
 		this.y = new SimpleFloatProperty(y);
-		this.timecode = new  SimpleIntegerProperty(timecode);
-		this.frame = frame;
-		this.timecode.set(timecode);
+		this.timecode = new  SimpleLongProperty(timecode);
+
 	}
 
-	public IplImage getFrame() {
-		return frame;
-	}
-	public void setFrame(IplImage frame) {
-		this.frame = frame;
-	}
-
-	public int getTimecode() {
+	public long getTimecode() {
 		return timecode.get();
 	}
 
-	public void setTimecode(int timecode) {
+	public void setTimecode(long timecode) {
 		this.timecode.set(timecode);
 	}
 
@@ -52,7 +45,7 @@ public class Point {
 	public void setX(float x) {
 		this.x.set(x);
 	}
-    public IntegerProperty timeProperty() {
+    public LongProperty timeProperty() {
         return timecode;
     }
     public FloatProperty yProperty() {

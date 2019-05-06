@@ -58,9 +58,9 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <Label layoutX="14.0" layoutY="14.0" text="Image " />
-                  <AnchorPane fx:id="conteneur" layoutX="14.0" layoutY="31.0">
+                  <AnchorPane fx:id="conteneur" layoutX="12.0" layoutY="34.0" onMouseClicked="#handleMouseClicked" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" prefHeight="147.0" prefWidth="202.0">
                      <children>
-                        <ImageView fx:id="referentielFrame" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleMouseClicked" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="referentielFrame" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </AnchorPane>
                </children>

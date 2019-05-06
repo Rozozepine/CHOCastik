@@ -14,7 +14,10 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.text.GapContent;
 
 import org.opencv.core.Mat;
 
@@ -34,6 +37,7 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
@@ -90,13 +94,12 @@ public class AnalyseController {
     private static volatile Thread playThread;
     private static volatile Thread analyseThread;
     private Image image;
-
-    private Mat frame = new Mat();
+    private Frame frame = new Frame();
 	private boolean videoIsActive = false;
 	private boolean analyseIsActive = false;
 	private Timer timer;
 	private  Iterator it;
-	private ConcurrentLinkedQueue<IplImage> pileFrame;
+	private ConcurrentLinkedQueue<Frame> pileFrame;
 	private CameraDevice choiceCam;
 	final Java2DFrameConverter converter = new Java2DFrameConverter();
 	final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
@@ -110,32 +113,32 @@ public class AnalyseController {
     }
     @FXML
     public void startCamera() {
-       if(this.videoIsActive) {
-    	   playThread.interrupt();
-    	   this.videoIsActive= false;
+       if(mainApp.getThreadCaptureFlag()) {
+    	   mainApp.setThreadCaptureFlag(false);
     	   this.Startvideo.setText("Start");
        }else {
     	   this.threadCam();
-    	   this.videoIsActive = true;
+    	   mainApp.setThreadCaptureFlag(true);
+    	   playThread.start();
     	   this.Startvideo.setText("Stop");
-       	   playThread.start();
+ 
        }
     }
     @FXML 
     void startAnalyse() {
-    	if(this.analyseIsActive) {
-    		analyseThread.interrupt();
+    	if(mainApp.getThreadAnalyseFlag()) {
+    		mainApp.setThreadAnalyseFlag(false);
     		this.setMenuDisable(false);
-    		this.analyseIsActive = false;
     		this.StartAnalyse.setText("Start Analyse");
     		
     	}else {
     		if(!mainApp.getMobileData().isEmpty() &&  mainApp.getReferentiel() != null &&  mainApp.getMesure() != null) {
+    			deleteAllDataGraph();
     			creatDataGraph();
     			analyseThread = new Thread(new Analyse(mainApp));
     			analyseThread.start();
     			this.setMenuDisable(true);
-    			this.analyseIsActive = true;
+    			mainApp.setThreadAnalyseFlag(true);
     			this.StartAnalyse.setText("Stop Analyse");
     		}else {
     			Alert alert = new Alert(AlertType.WARNING);
@@ -156,10 +159,14 @@ public class AnalyseController {
 		mainApp.showAddReferentiel(image);
 	}
 	@FXML
+	public void handleMesure() {
+		mainApp.showAddMesure(image);
+	}
+	@FXML
 	public void handleExportAll() {
 		if(mainApp.getPileImage().isEmpty()) {
 			for(Tracker tracker: mainApp.getListTraker()) 
-				tracker.getTrajectoire().exportTrajectoire();
+				tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure());
 		}
 		
 	}
@@ -167,19 +174,27 @@ public class AnalyseController {
 	public void showFrame(Point point) {
 		if(!analyseIsActive) {
 			final CvFont font = new CvFont(); 
-		    if(this.videoIsActive) {
-		    	   playThread.interrupt();
+		    if(mainApp.getThreadCaptureFlag()) {
+		    	   mainApp.setThreadCaptureFlag(false);
 		    	   this.videoIsActive= false;
 		    	   this.Startvideo.setText("Start");
 		    }
-        	IplImage dessin = cvCloneImage(point.getFrame());
+        	IplImage dessin = cvCloneImage(converterToIplImage.convert(frame));
         	cvInitFont(font, CV_FONT_HERSHEY_PLAIN,0.5, 0.5);
+        	mainApp.getReferentiel().transformToNoneRelatif(point);
+        	mainApp.getReferentiel().transformToNoneNaturalReferentiel(point);
         	cvPutText(dessin, "Mobile", cvPoint((int) point.getX(),(int) point.getY()), font, CvScalar.GREEN); 
+        	mainApp.getReferentiel().transformToNaturalReferentiel(point);
+        	mainApp.getReferentiel().transformToRelatif(point);
         	Frame frame = converterToIplImage.convert(dessin);
     		Image image = SwingFXUtils.toFXImage(converter.convert(frame), null);
         	RetourCam.setImage(image);
      		
 		}
+	}
+	private void deleteAllDataGraph() {
+		tabPane.getTabs().removeAll(tabPane.getTabs());
+		graphiquePoint.getData().removeAll(graphiquePoint.getData());			
 	}
 
 	private void creatDataGraph() {
@@ -194,7 +209,7 @@ public class AnalyseController {
 			TableView<Point> table = new TableView<Point>();
 			TableColumn<Point,Float> xCol = new TableColumn<Point, Float>("X");
 			TableColumn<Point,Float> yCol = new TableColumn<Point,Float>("Y");
-			TableColumn<Point,Integer> timeCol = new TableColumn<Point,Integer>("timestamp");
+			TableColumn<Point,Long> timeCol = new TableColumn<Point,Long>("timestamp");
 			table.setItems(tracker.getTrajectoire().getListOfPoint());
 			xCol.setCellValueFactory(cellData -> cellData.getValue().xProperty().asObject());
 			yCol.setCellValueFactory(cellData -> cellData.getValue().yProperty().asObject());
@@ -235,8 +250,8 @@ public class AnalyseController {
 	 * Transmet à thread s'occupant des calculs les frame
 	 * @param frame
 	 */
-	public void traitement(IplImage frame) {
-		if(analyseIsActive) {
+	public void traitement(Frame frame) {
+		if(mainApp.getThreadAnalyseFlag()) {
 			pileFrame.add(frame.clone());		
 		}	
 	}
@@ -247,29 +262,34 @@ public class AnalyseController {
   	   playThread = new Thread(new Runnable() { public void run() {
   		   try {
   			  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
-  			  final FrameGrabber grabber = new OpenCVFrameGrabber(setting.getDeviceNumber()); // on crée le grabber 
-  			  Frame frame = new Frame();
+  			  final FrameGrabber grabber =  FrameGrabber.createDefault(setting.getDeviceNumber()); // on crée le grabber 
+  			  
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
   			  grabber.start(); // on le démarre 
-  			  conteneur.setMinWidth(grabber.getImageWidth()); 
+  			  conteneur.setMinWidth(grabber	.getImageWidth()); 
   			  conteneur.setMinHeight(grabber.getImageHeight());
-
-              while(!Thread.interrupted()) {
+  			  long startTime = System.currentTimeMillis();
+  			  long videoTS;
+              while(mainApp.getThreadCaptureFlag()) {
             	 frame = grabber.grab();  
+            	 videoTS = System.currentTimeMillis() - startTime;
+            	 System.out.println(videoTS);
               	 if(frame == null) {
                		 break;
               	  }else {
               		 IplImage grabbedImage = converterToIplImage.convert(frame);
               		 grabbedImage = choiceCam.undistort(grabbedImage);
               		 frame = converterToIplImage.convert(grabbedImage);
-              		 traitement(grabbedImage);
+              		 frame.timestamp = System.currentTimeMillis();
+              		 traitement(frame);
               		 image = SwingFXUtils.toFXImage(converter.convert(frame), null);
               		 Platform.runLater(() -> {
               		    	 RetourCam.setImage(image);
               		 });
               	   }
-              	   
+              	 Thread.sleep(16);	   
                }
+               
                executor.shutdownNow();
                executor.awaitTermination(10, TimeUnit.SECONDS);
                grabber.stop();

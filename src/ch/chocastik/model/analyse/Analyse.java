@@ -3,6 +3,9 @@ package ch.chocastik.model.analyse;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.bytedeco.javacpp.opencv_core.IplImage;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.OpenCVFrameConverter;
+
 import ch.chocastik.controller.MainApp;
 import ch.chocastik.model.analyse.objet.Mesure;
 import ch.chocastik.model.analyse.objet.Mobile;
@@ -24,8 +27,10 @@ public class Analyse implements Runnable {
 	private ArrayList<Tracker> listTraker;
 	private Referentiel referentiel;
 	private Mesure mesure;
-	private ConcurrentLinkedQueue<IplImage> pileFrame;
+	private ConcurrentLinkedQueue<Frame> pileFrame;
 	private long startTime;
+	final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
+	private MainApp mainApp;
 	
 	public Analyse(MainApp mainApp) {
 		this.listTraker = mainApp.getListTraker();
@@ -33,17 +38,18 @@ public class Analyse implements Runnable {
 		this.referentiel = mainApp.getReferentiel();
 		this.mesure = mainApp.getMesure();
 		this.pileFrame = mainApp.getPileImage();
+		this.mainApp = mainApp;
 		this.startTime = System.currentTimeMillis();
 	}
 
 	@Override
 	public void run() {
 		//tant que le Thread n'est pas stoppée on repete l'action
-		while(!Thread.interrupted() || !pileFrame.isEmpty()) {
-			IplImage frame = pileFrame.poll(); 
+		while(mainApp.getThreadAnalyseFlag() || !pileFrame.isEmpty()) {
+			Frame frame = pileFrame.poll(); 
 			if(frame != null) {
 				for(Tracker trac: listTraker) 
-					trac.detectCircle(frame, 0);
+					trac.detectCircle(converterToIplImage.convert(frame),frame.timestamp-startTime);
 			}
 		}	
 	}

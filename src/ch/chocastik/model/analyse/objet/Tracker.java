@@ -45,10 +45,10 @@ public class Tracker {
 		this.mobile = mobile;
 		this.referentiel = referentiel;
 		this.series = series;
-		this.trajectoire = new Trajectoire(referentiel, mobile);
+		this.trajectoire = new Trajectoire(referentiel, mobile, series);
 	}
 	
-	public void detectCircle(IplImage imgSrc, int timecode) {
+	public void detectCircle(IplImage imgSrc, long timecode) {
 		CvMemStorage mem = CvMemStorage.create();
 		IplImage detectThrs = getThresholdImage(imgSrc);
 		IplImage WorkingImage = cvCreateImage(detectThrs.asCvMat().cvSize(), IPL_DEPTH_8U, 1);   
@@ -68,22 +68,19 @@ public class Tracker {
         for(int i = 0; i < circles.total(); i++){
             CvPoint3D32f circle = new CvPoint3D32f(cvGetSeqElem(circles, i));
             CvPoint center = cvPointFrom32f(new CvPoint2D32f(circle.x(), circle.y()));
-            Point point = new Point(circle.x(), circle.y(), imgSrc, timecode);
+            Point point = new Point(circle.x(), circle.y(), timecode);
             if(referentiel.checkCordonne(point)) 
             		addPointToTrajectoire(point);
             
         }
-        
        	cvReleaseImage(detectThrs);
        	cvReleaseImage(WorkingImage);
 	}
 	private void addPointToTrajectoire(Point point) {
 		if(getTrajectoire() == null) {
-			setTrajectoire(new Trajectoire(this.referentiel, this.mobile));
+			setTrajectoire(new Trajectoire(this.referentiel, this.mobile, series));
 			getTrajectoire().addPoint(point);
 		}else{
-			Platform.runLater(()->series.getData().add(new XYChart.Data<Number, Number>(point.getX(),point.getY())));
-			System.out.println(point.getX());
 			getTrajectoire().addPoint(point);
 		}
 	}

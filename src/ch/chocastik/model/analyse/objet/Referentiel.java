@@ -5,6 +5,8 @@ public class Referentiel {
 	private int pixelYOrigine;
 	private int maxPixelX;
 	private int maxPixelY;
+	private float frameHeight;
+
 	public Referentiel() {
 		this.setPixelXOrigine(0);
 		this.setPixelYOrigine(0);
@@ -22,9 +24,19 @@ public class Referentiel {
 			return false;
 		return true;
 	}
+	public void transformToNaturalReferentiel(Point point) {
+		point.setY(this.frameHeight - point.getY());
+	}
+	public void transformToNoneNaturalReferentiel(Point point) {
+		point.setY(this.frameHeight - point.getY());
+	}
 	public void transformToRelatif(Point point) {
 		point.setX(point.getX() - this.getPixelXOrigine());
 		point.setY(point.getY() - this.getPixelYOrigine());
+	}
+	public void transformToNoneRelatif(Point point) {
+		point.setX(point.getX() + this.getPixelXOrigine());
+		point.setY(point.getY() + this.getPixelYOrigine());
 	}
 	public int getMaxPixelY() {
 		return maxPixelY;
@@ -49,6 +61,12 @@ public class Referentiel {
 	}
 	public void setPixelXOrigine(int pixelXOrigine) {
 		this.pixelXOrigine = pixelXOrigine;
+	}
+	public float getFrameHeight() {
+		return frameHeight;
+	}
+	public void setFrameHeight(float frameHeight) {
+		this.frameHeight = frameHeight;
 	}
 	
 }

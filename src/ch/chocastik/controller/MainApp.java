@@ -22,9 +22,11 @@ import org.opencv.core.*;
 
 import ch.chocastik.view.accueil.AccueilController;
 import ch.chocastik.view.analyse.AddGlisseurController;
+import ch.chocastik.view.analyse.AddMesureController;
 import ch.chocastik.view.analyse.AddReferentielleController;
 import ch.chocastik.view.analyse.AnalyseController;
 import ch.chocastik.view.analyse.EditGlisseurController;
+
 import ch.chocastik.view.calibration.CalibrationController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -50,7 +52,9 @@ public class MainApp extends Application {
 	private Referentiel referentiel = new Referentiel();
 	private ArrayList<Tracker> listTraker = new ArrayList<Tracker>();
 	private Mesure mesure = new Mesure();
-	private ConcurrentLinkedQueue<IplImage> pileImage = new ConcurrentLinkedQueue<IplImage>();
+	private ConcurrentLinkedQueue<Frame> pileImage = new ConcurrentLinkedQueue<Frame>();
+	private volatile boolean threadAnalyseFlag = false;
+	private volatile boolean threadCaptureFlag = false; 
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -101,8 +105,9 @@ public class MainApp extends Application {
 			AnchorPane calibration = (AnchorPane) loader.load();
 			rootLayout.setCenter(calibration);
 			CalibrationController controller = loader.getController();
-			controller.dsetCameraChoice(cam);
+			controller.setCameraChoice(cam);
 			controller.setMainApp(this);
+			controller.initVariable();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -178,6 +183,28 @@ public class MainApp extends Application {
 			return false;
 		}
 	}
+	public boolean showAddMesure(Image frame) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("/ch/chocastik/view/analyse/AddMesureFX.fxml"));
+			SplitPane page = (SplitPane) loader.load();
+			Stage dialogueStage = new Stage();
+			dialogueStage.setTitle("Add Mesure");
+			dialogueStage.initModality(Modality.WINDOW_MODAL);
+			dialogueStage.initOwner(primaryStage);
+	        Scene scene = new Scene(page);
+	        dialogueStage.setScene(scene);
+	        AddMesureController controleur = loader.getController();
+	        controleur.setDialogueStage(dialogueStage);
+	        controleur.setFrame(frame);
+	        controleur.setMesure(mesure);
+	        dialogueStage.showAndWait();
+	        return controleur.isOkClicked();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
 	// Get et Set 
 	public Mesure getMesure() {
@@ -199,7 +226,7 @@ public class MainApp extends Application {
 		return mobileData;
 	}
 
-	public ConcurrentLinkedQueue<IplImage>  getPileImage(){
+	public ConcurrentLinkedQueue<Frame>  getPileImage(){
 		return this.pileImage;
 	}
 	public ArrayList<Tracker> getListTraker() {
@@ -208,6 +235,19 @@ public class MainApp extends Application {
 	public void setListTraker(ArrayList<Tracker> listTraker) {
 		this.listTraker = listTraker;
 	}
+	public boolean getThreadAnalyseFlag() {
+		return threadAnalyseFlag;
+	}
+	public void setThreadAnalyseFlag(boolean threadAnalyseFlag) {
+		this.threadAnalyseFlag = threadAnalyseFlag;
+	}
+	public boolean getThreadCaptureFlag() {
+		return threadCaptureFlag;
+	}
+	public void setThreadCaptureFlag(boolean threadCaptureFlag) {
+		this.threadCaptureFlag = threadCaptureFlag;
+	}
+
 	/**
 	 *  Fonction Main
 	 * @param args
@@ -218,4 +258,5 @@ public class MainApp extends Application {
 		
 		launch(args);
 	}
+
 }

@@ -1,66 +1,60 @@
 package ch.chocastik.view.calibration;
+
 import static org.bytedeco.javacpp.opencv_core.IPL_DEPTH_8U;
-import static org.bytedeco.javacpp.opencv_core.IPL_DEPTH_SIGN;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
 
 import org.bytedeco.javacpp.opencv_core.IplImage;
-
 import org.bytedeco.javacv.FrameGrabber.Exception;
 import org.bytedeco.javacv.FrameGrabber.ImageMode;
-import org.bytedeco.javacpp.*;
 import org.bytedeco.javacv.*;
-
 import ch.chocastik.controller.MainApp;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-
-import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.*;
-import static org.bytedeco.javacpp.opencv_imgproc.*;
-import org.bytedeco.javacpp.*;
-import org.bytedeco.javacv.*;
-import static org.bytedeco.javacpp.opencv_core.*;
-import static org.bytedeco.javacpp.opencv_imgproc.*;
+import javafx.scene.text.Text;
 import static org.bytedeco.javacpp.opencv_imgcodecs.*;
+
 public class CalibrationController {
 
     @FXML
     private ImageView RetourCalib;
     @FXML
-    private ImageView mire;
+    private Button boutonStart;
     @FXML
-    private Button BGo;
+    private Button boutonContinue;
     @FXML
     private Button ReglageCalib;
     @FXML
     private AnchorPane conteneur;
+    @FXML
+    private Text nombreImage;
+    
+    private boolean videoIsActive = false;
     private boolean done = false;
+    private long lastAddedTime = -1;
 	private MainApp mainApp;
 	private Thread calibrationThread;
     private Marker[][] markers;
     private MarkedPlane boardPlane;
+    private CameraDevice.Settings cameraSetting;
     private Marker.ArraySettings markerSettings = new Marker.ArraySettings();
-    private  MarkerDetector.Settings markerDetectorSettings =  new MarkerDetector.Settings(); // possiblement à redifinr
+    private  MarkerDetector.Settings markerDetectorSettings =  new MarkerDetector.Settings();
     private GeometricSettings geometricCalibratorSettings = new GeometricSettings();
-
     private CameraDevice cameraDevices = null;
-    private FrameGrabber frameGrabbers = null;
     private GeometricCalibrator geometricCalibrators = null;
-	private boolean videoIsActive = false;
+	
+    private IplImage colorImages;
+    private FrameGrabber frameGrabbers;
+	private OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
+	private Java2DFrameConverter converter2 = new Java2DFrameConverter();
     
     public static class GeometricSettings extends ProCamGeometricCalibrator.Settings {
         boolean enabled = true;
@@ -78,9 +72,6 @@ public class CalibrationController {
         public boolean isUseMarkerCenters() {
             return useMarkerCenters;
         }
-        public void setUseMarkerCenters(boolean useMarkerCenters) {
-            this.useMarkerCenters = useMarkerCenters;
-        }
 
         public int getImagesInTotal() {
             return imagesInTotal;
@@ -97,73 +88,93 @@ public class CalibrationController {
             this.shotTimeInterval = shotTimeInterval;
         }
     }
-
+    // METHODE FXML
     @FXML
     private void initialize() throws Exception {
     	RetourCalib.fitWidthProperty().bind(conteneur.widthProperty());
     	RetourCalib.fitHeightProperty().bind(conteneur.heightProperty());
     }
     @FXML
-    private void startCalibration() throws Exception {
+	public void handlerContinue() throws Exception {
+		if(this.done) {
+    	calibrationThread.interrupt();
+	 		frameGrabbers.stop();
+            frameGrabbers.release();
+			mainApp.showAnalyse(cameraDevices);
+    }
+    	
+    	mainApp.showAnalyse(cameraDevices);
+	}
+	@FXML
+	public void handleImageMire() {
+		
+	}
+	
+    /**
+     * Cette méthode permet de lancer ou stopper l'analyse vidéo lorsque l'utilisateur
+     *  clique sur le bouton Start
+     */
+    @FXML
+    private void startCalibration() {
+    	// On vérifie si l'analyse n'est pas deja en cours, si c'est le cas
+    	// on la stoppe, sinon on la relance
         if(this.videoIsActive) {
      	   calibrationThread.interrupt();
      	   this.videoIsActive = false;
-     	   this.BGo.setText("Start");
+     	   this.boutonStart.setText("Start");
         }else {
      	   this.threadCalibration();
+     	   calibrationThread.start();
      	   this.videoIsActive = true;
-     	   this.BGo.setText("Stop");
-     	 
-        	 calibrationThread.start();
+     	   this.boutonStart.setText("Stop");
         }
     }
+    
+    // METHODE DE L'OBJET
+    /**
+     * Cette méthode permet de créer le thread s'occuppant d'analyser la vidéo a la recherche de marqueur
+     * et quand il à suffisament de marqueur elle lance la calibration
+     */
 	public void threadCalibration() {
+		
 		 calibrationThread = new Thread(new Runnable() { public void run() {
 			try {
-				 ExecutorService executor = Executors.newSingleThreadExecutor();
-				 geometricCalibrators = new GeometricCalibrator(geometricCalibratorSettings,markerDetectorSettings, boardPlane, cameraDevices); 
-				
-	  			 CameraDevice.Settings setting = (CameraDevice.Settings) cameraDevices.getSettings();
-	  			 final FrameGrabber frameGrabbers = new OpenCVFrameGrabber(setting.getDeviceNumber()); // on crée le grabber 
-				 if(frameGrabbers.getImageMode() != ImageMode.GRAY) {
-					 frameGrabbers.setImageMode(ImageMode.GRAY);
-				 }
-				 frameGrabbers.start();
-				 conteneur.setMinWidth(frameGrabbers.getImageWidth());
-	  			 conteneur.setMinHeight(frameGrabbers.getImageHeight());
-				 final IplImage[] colorImages = new IplImage[1];
-
-	             
-				 final  OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
-				 final Java2DFrameConverter converter2 = new Java2DFrameConverter();
-				 done = false;
-				 long lastAddedTime = -1;
-				 while (!done && !Thread.interrupted()) {
-					 final Frame grabbedFrames = frameGrabbers.grab();
-					 final IplImage grabbedImages = converter.convert(grabbedFrames);	
-					 if (colorImages[0] == null) {
-		                    colorImages[0] = IplImage.create(grabbedImages.width(), grabbedImages.height(), IPL_DEPTH_8U, 3);
-					 }
-					 cvCvtColor(grabbedImages, colorImages[0], CV_GRAY2RGB);
-		      
-					 boolean hasDetectedMarkers = geometricCalibrators.processImage(grabbedImages) != null;
-					 geometricCalibrators.drawMarkers(colorImages[0]);
-					 Image image = SwingFXUtils.toFXImage(converter2.convert(converter.convert(colorImages[0])), null);
-					 Platform.runLater(() -> {
-						 RetourCalib.setImage(image);
-					 });
-					 long time = System.currentTimeMillis();
-					 if (hasDetectedMarkers && time-lastAddedTime > geometricCalibratorSettings.shotTimeInterval) {
-						 lastAddedTime = time;
-		        		// the calibrators have decided to save these markers, make a little flash effect
-						 geometricCalibrators.addMarkers();
-						 System.out.println("Prout "+geometricCalibrators.getImageCount());
-						 if (geometricCalibrators.getImageCount() >= geometricCalibratorSettings.imagesInTotal) 
+				ExecutorService executor = Executors.newSingleThreadExecutor();
+				frameGrabbers.start();
+				while (!Thread.interrupted()) {
+					final IplImage grabbedImages = converter.convert(frameGrabbers.grab());
+					// on copie l'image dans une version RGB
+					cvCvtColor(grabbedImages, colorImages, CV_GRAY2RGB);
+					// on vérifie si on à trouvé des marqueurs
+					boolean hasDetectedMarkers = geometricCalibrators.processImage(grabbedImages) != null;
+					// on affiche ceux detectées
+					geometricCalibrators.drawMarkers(colorImages);
+					Image image = SwingFXUtils.toFXImage(converter2.convert(converter.convert(colorImages)), null);
+					// on projete l'image sur l'image view
+					Platform.runLater(() -> {
+						RetourCalib.setImage(image);
+					});
+					long time = System.currentTimeMillis();
+					// si on à detecté des marqueur, et que le temps depuis la derniére capture est suffisament important
+					// on les ajoute
+					if (hasDetectedMarkers && time-lastAddedTime > geometricCalibratorSettings.shotTimeInterval) {
+						lastAddedTime = time;
+						geometricCalibrators.addMarkers();
+						// on affiche le nombre d'image restant à capturer
+						Platform.runLater(() -> {
+							nombreImage.setText("Il vous reste "+(geometricCalibratorSettings.getImagesInTotal()-geometricCalibrators.getImageCount()) + " Image à prendre");
+						});
+						// si on à suffisament de marqueur on lance la calibration
+						if (geometricCalibrators.getImageCount() >= geometricCalibratorSettings.imagesInTotal) {
+							 GeometricCalibrator calibratorAtOrigin = geometricCalibrators;
+							 geometricCalibrators.calibrate(geometricCalibratorSettings.useMarkerCenters);
+							 // on authorise l'utilisateur à continuer
+							 boutonContinue.setDisable(false);			 
 							 done = true;
-					 	}
-				 	}
-				GeometricCalibrator calibratorAtOrigin = geometricCalibrators;
-			    geometricCalibrators.calibrate(geometricCalibratorSettings.useMarkerCenters);
+						}				
+					}
+				}
+				// on stop de maniére propre les différent objet
 		 		executor.shutdownNow();	
 		 		executor.awaitTermination(10, TimeUnit.SECONDS);
 		 		frameGrabbers.stop();
@@ -173,27 +184,57 @@ public class CalibrationController {
 		   }
 		   }});
 	}
-	
+	/**
+	 * Cette méthode permet d'initaliser différente variable nessecaire au fonctionnement de l'analyse
+	 * @throws Exception
+	 */
+    public void initVariable() throws Exception {
+    	// on initialise le marqueur
+    	double marginX = Math.max(0.0, (markerSettings.getSpacingX()-markerSettings.getSizeX())/2);
+        double marginY = Math.max(0.0, (markerSettings.getSpacingY()-markerSettings.getSizeY())/2);
+        double width = (markerSettings.getColumns()-1)*markerSettings.getSpacingX() + markerSettings.getSizeX() + 2*marginX;
+        double height = (markerSettings.getRows()-1)*markerSettings.getSpacingY() + markerSettings.getSizeY() + 2*marginY;
+        markers = Marker.createArray(markerSettings, marginX, marginY);
+        boardPlane = new MarkedPlane((int)Math.ceil(width), (int)Math.ceil(height), markers[0], 1);
+    	// on intialise le calibrateur
+		geometricCalibrators = new GeometricCalibrator(geometricCalibratorSettings,markerDetectorSettings, boardPlane, cameraDevices); 
+		// on initialise la paramêtre de la caméra 
+		cameraSetting = (CameraDevice.Settings) cameraDevices.getSettings();
+		// on initialise le frameGrabber
+		frameGrabbers =  FrameGrabber.createDefault(cameraSetting.getDeviceNumber()); 
+		
+		// on démarre le Grabber pour configurer différent paramêtre
+		frameGrabbers.start();
+		frameGrabbers.setFrameRate(60.0);
+		// on vérife si le mode de capture est en noir/blanc
+		if(frameGrabbers.getImageMode() != ImageMode.GRAY) {
+			frameGrabbers.setImageMode(ImageMode.GRAY);
+		}
+		// on ajuste la taille de l'image
+		conteneur.setMinWidth(frameGrabbers.getImageWidth());
+		conteneur.setMinHeight(frameGrabbers.getImageHeight());
+		// on crée l'image qui va affiche les marqueur en couleur et le reste en noir/blanc
+		colorImages = new IplImage();
+		colorImages = IplImage.create(frameGrabbers.getImageWidth(), frameGrabbers.getImageHeight(), IPL_DEPTH_8U, 3);
+		// on stoppe le Grabber
+		frameGrabbers.stop();
+		frameGrabbers.release();	
+		// on sauvgarde une image de la mire
+		cvSaveImage("test.jpg", boardPlane.getImage());
+		// on empeche l'utilisateur de continuer
+		this.boutonContinue.setDisable(true);
+		// on affiche le nombre d'image à prendre
+		nombreImage.setText("Il vous reste "+geometricCalibratorSettings.getImagesInTotal() + " Image à prendre");
+	}
+
+	// GET ET SET
 	public void setMainApp(MainApp mainApp) {
 		   this.mainApp = mainApp;
 	}
-	public void dsetCameraChoice(CameraDevice cam) throws Exception {
+	public void setCameraChoice(CameraDevice cam) throws Exception {
 		this.cameraDevices = cam;
-        double marginX = Math.max(0.0, (markerSettings.getSpacingX()-markerSettings.getSizeX())/2);
-        double marginY = Math.max(0.0, (markerSettings.getSpacingY()-markerSettings.getSizeY())/2);
-        markers = Marker.createArray(markerSettings, marginX, marginY);
-        double width = (markerSettings.getColumns()-1)*markerSettings.getSpacingX() + markerSettings.getSizeX() + 2*marginX;
-        double height = (markerSettings.getRows()-1)*markerSettings.getSpacingY() + markerSettings.getSizeY() + 2*marginY;
-        boardPlane = new MarkedPlane((int)Math.ceil(width), (int)Math.ceil(height), markers[0], 1);
-        cvSaveImage("test.jpg", boardPlane.getImage());
-        
 	}
-	@FXML
-	public void handlerContinue() {
-		if(this.done) {
-			mainApp.showAnalyse(cameraDevices);
-		}
-	}
+	
 }
 		
 

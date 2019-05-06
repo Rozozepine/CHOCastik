@@ -10,7 +10,9 @@ import java.util.ResourceBundle;
 import org.bytedeco.javacpp.videoInputLib.videoInput;
 import org.bytedeco.javacv.CameraDevice;
 import org.bytedeco.javacv.CameraSettings;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.VideoInputFrameGrabber;
 import org.bytedeco.javacv.ProjectiveDevice.Exception;
 
 import ch.chocastik.controller.MainApp;
@@ -38,33 +40,48 @@ public class AccueilController {
 	static CameraDevice cameraDevices = null;
 
 	
-	public void AccueilController() {}
+
+	
 	@FXML
 	public void OpenCalib(MouseEvent event) throws Exception, PropertyVetoException {
 		CameraDevice.Settings[] cs= cameraSettings.toArray();
-		cs[this.choice].setFrameGrabber(FrameGrabber.getDefault());
-   	 	cameraDevices = new CameraDevice(cs[this.choice]);    	 
+		cs[this.choice].setDeviceNumber(this.choice);
+		System.out.print(cs[this.choice].getDeviceNumber());
+   	 	cameraDevices = new CameraDevice(cs[this.choice]);    	
+   	 	
 		this.mainApp.showCalibration(cameraDevices);
 	}
 		
 	public void setMainApp(MainApp mainApp) {
 	   this.mainApp = mainApp;
+	   
 	}
     @FXML
-    private void initialize() throws PropertyVetoException{
-    	int n = videoInput.listDevices();
+    private void initialize() throws PropertyVetoException, org.bytedeco.javacv.FrameGrabber.Exception{
+    	int n = VideoInputFrameGrabber.getDeviceDescriptions().length;
+    	
     	cameraSettings.setQuantity(n);  
+    	SelectionCam.setText("Aucune caméras");
 		for (int i = 0; i < n; i++) {
-			MenuItem menuItem = new MenuItem("Device "+i+" : " +videoInput.getDeviceName(i).getString());
+			
+			MenuItem menuItem = new MenuItem("Device "+i+" : " +VideoInputFrameGrabber.getDeviceDescriptions()[i]);
 			menuItem.setId(Integer.toString(i));
 			menuItem.setOnAction(createChoiceHandler(i));
 			SelectionCam.getItems().add(menuItem);
 		}
     }
     private EventHandler<ActionEvent> createChoiceHandler(int index) {
-        return event -> setChoice(index);
+        return event -> {
+			try {
+				setChoice(index);
+			} catch (org.bytedeco.javacv.FrameGrabber.Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		};
     }
-    private void setChoice(int index) {
+    private void setChoice(int index) throws org.bytedeco.javacv.FrameGrabber.Exception {
+    	SelectionCam.setText("Device "+index+" : " + VideoInputFrameGrabber.getDeviceDescriptions()[index]);
     	this.choice = index;
     	
     }

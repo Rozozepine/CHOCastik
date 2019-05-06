@@ -5,6 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="591.0" prefWidth="937.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.calibration.CalibrationController">
    <children>
@@ -18,10 +19,12 @@
             <Font size="23.0" />
          </font>
       </Label>
-      <Button fx:id="BGo" layoutX="450.0" layoutY="545.0" mnemonicParsing="false" onAction="#startCalibration" text="GO!" />
+      <Button fx:id="boutonStart" layoutX="450.0" layoutY="545.0" mnemonicParsing="false" onAction="#startCalibration" text="Start" AnchorPane.bottomAnchor="10.0" />
       <Label layoutX="14.0" layoutY="56.0" prefHeight="17.0" prefWidth="308.0" text="Posez la mire sur la table et  prenez une photo " />
       <Label layoutX="15.0" layoutY="44.0" text="Déplacez la mire et prenez une photo" />
       <Label layoutX="14.0" layoutY="67.0" text="recommencez quand le calibrage est fini, un bouton apparaitera" />
-      <Button layoutX="503.0" layoutY="545.0" mnemonicParsing="false" onAction="#handlerContinue" text="Continue" />
+      <Button fx:id="boutonContinue" layoutX="503.0" layoutY="545.0" mnemonicParsing="false" onAction="#handlerContinue" text="Continue" AnchorPane.bottomAnchor="10.0" />
+      <Button layoutX="579.0" layoutY="556.0" mnemonicParsing="false" onAction="#handleImageMire" text="Image Mire" AnchorPane.bottomAnchor="10.0" />
+      <Text fx:id="nombreImage" layoutX="15.0" layoutY="573.0" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.bottomAnchor="10.0" />
    </children>
 </AnchorPane>
