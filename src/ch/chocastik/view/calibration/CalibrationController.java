@@ -59,7 +59,7 @@ public class CalibrationController {
     public static class GeometricSettings extends ProCamGeometricCalibrator.Settings {
         boolean enabled = true;
         boolean useMarkerCenters = true;
-        int imagesInTotal = 3;
+        int imagesInTotal = 5;
         long shotTimeInterval = 2000;
 
         public boolean isEnabled() {
@@ -96,12 +96,12 @@ public class CalibrationController {
     }
     @FXML
 	public void handlerContinue() throws Exception {
-		if(this.done) {
+		/* if(this.done) {
     	calibrationThread.interrupt();
 	 		frameGrabbers.stop();
             frameGrabbers.release();
 			mainApp.showAnalyse(cameraDevices);
-    }
+    } */
     	
     	mainApp.showAnalyse(cameraDevices);
 	}
@@ -141,7 +141,7 @@ public class CalibrationController {
 			try {
 				ExecutorService executor = Executors.newSingleThreadExecutor();
 				frameGrabbers.start();
-				while (!Thread.interrupted()) {
+				while (!Thread.interrupted() || !done) {
 					final IplImage grabbedImages = converter.convert(frameGrabbers.grab());
 					// on copie l'image dans une version RGB
 					cvCvtColor(grabbedImages, colorImages, CV_GRAY2RGB);
@@ -222,7 +222,7 @@ public class CalibrationController {
 		// on sauvgarde une image de la mire
 		cvSaveImage("test.jpg", boardPlane.getImage());
 		// on empeche l'utilisateur de continuer
-		this.boutonContinue.setDisable(true);
+		//this.boutonContinue.setDisable(true);
 		// on affiche le nombre d'image à prendre
 		nombreImage.setText("Il vous reste "+geometricCalibratorSettings.getImagesInTotal() + " Image à prendre");
 	}

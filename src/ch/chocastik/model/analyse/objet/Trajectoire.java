@@ -44,11 +44,12 @@ public class Trajectoire {
 			return true;
 		}
 	}
-	public void exportTrajectoire(Mesure mesure) {
+	public void exportTrajectoire(Mesure mesure, ArrayList<Tracker> listTraker) {
+		for()
 		try {
 			PrintWriter writer = new PrintWriter("C:\\Users\\Rose\\Documents\\Projet\\Unige\\CHOCastik\\Resultat\\"+mobile.getName()+".txt");
 			for(Point point: listOfPoint) {
-				mesure.transformPointToRealPoint(point);
+				//mesure.transformPointToRealPoint(point);
 				writer.println(point.getTimecode()+":"+point.getX()+":"+point.getY());
 			}
 			writer.close();

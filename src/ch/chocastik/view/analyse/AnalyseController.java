@@ -166,7 +166,7 @@ public class AnalyseController {
 	public void handleExportAll() {
 		if(mainApp.getPileImage().isEmpty()) {
 			for(Tracker tracker: mainApp.getListTraker()) 
-				tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure());
+				tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure(), mainApp.getListTraker());
 		}
 		
 	}
@@ -263,10 +263,13 @@ public class AnalyseController {
   		   try {
   			  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
   			  final FrameGrabber grabber =  FrameGrabber.createDefault(setting.getDeviceNumber()); // on crée le grabber 
-  			  
+  			  final int captureWidth = 1920;
+  			  final int captureHeight = 1080;
+  			  grabber.setFrameRate(60);
+
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
   			  grabber.start(); // on le démarre 
-  			  conteneur.setMinWidth(grabber	.getImageWidth()); 
+  			  conteneur.setMinWidth(grabber.getImageWidth()); 
   			  conteneur.setMinHeight(grabber.getImageHeight());
   			  long startTime = System.currentTimeMillis();
   			  long videoTS;
@@ -278,7 +281,7 @@ public class AnalyseController {
                		 break;
               	  }else {
               		 IplImage grabbedImage = converterToIplImage.convert(frame);
-              		 grabbedImage = choiceCam.undistort(grabbedImage);
+              		 //grabbedImage = choiceCam.undistort(grabbedImage);
               		 frame = converterToIplImage.convert(grabbedImage);
               		 frame.timestamp = System.currentTimeMillis();
               		 traitement(frame);
@@ -287,7 +290,7 @@ public class AnalyseController {
               		    	 RetourCam.setImage(image);
               		 });
               	   }
-              	 Thread.sleep(16);	   
+              	 Thread.sleep(15);	   
                }
                
                executor.shutdownNow();
