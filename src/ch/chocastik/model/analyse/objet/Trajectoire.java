@@ -45,7 +45,6 @@ public class Trajectoire {
 		}
 	}
 	public void exportTrajectoire(Mesure mesure, ArrayList<Tracker> listTraker) {
-		for()
 		try {
 			PrintWriter writer = new PrintWriter("C:\\Users\\Rose\\Documents\\Projet\\Unige\\CHOCastik\\Resultat\\"+mobile.getName()+".txt");
 			for(Point point: listOfPoint) {

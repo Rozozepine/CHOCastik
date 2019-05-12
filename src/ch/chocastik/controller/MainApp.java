@@ -27,7 +27,7 @@ import ch.chocastik.view.analyse.AddReferentielleController;
 import ch.chocastik.view.analyse.AnalyseController;
 import ch.chocastik.view.analyse.EditGlisseurController;
 
-import ch.chocastik.view.calibration.CalibrationController;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -95,19 +95,6 @@ public class MainApp extends Application {
 			AnalyseController controller = loader.getController();
 			controller.setMainApp(this);
 			controller.dsetCameraChoice(cam);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	public void showCalibration(CameraDevice cam) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/calibration/CalibrationFX.fxml"));
-			AnchorPane calibration = (AnchorPane) loader.load();
-			rootLayout.setCenter(calibration);
-			CalibrationController controller = loader.getController();
-			controller.setCameraChoice(cam);
-			controller.setMainApp(this);
-			controller.initVariable();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

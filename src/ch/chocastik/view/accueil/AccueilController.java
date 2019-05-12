@@ -49,7 +49,7 @@ public class AccueilController {
 		System.out.print(cs[this.choice].getDeviceNumber());
    	 	cameraDevices = new CameraDevice(cs[this.choice]);    	
    	 	
-		this.mainApp.showCalibration(cameraDevices);
+		this.mainApp.showAnalyse(cameraDevices);
 	}
 		
 	public void setMainApp(MainApp mainApp) {
