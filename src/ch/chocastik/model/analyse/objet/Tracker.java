@@ -27,6 +27,7 @@ import org.bytedeco.javacpp.opencv_core.CvPoint3D32f;
 import org.bytedeco.javacpp.opencv_core.CvScalar;
 import org.bytedeco.javacpp.opencv_core.CvSeq;
 import org.bytedeco.javacpp.opencv_core.IplImage;
+import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 
@@ -41,10 +42,12 @@ public class Tracker {
 	private Trajectoire trajectoire;
 	private Referentiel referentiel;
 	private  XYChart.Series<Number, Number> series;
-	public Tracker(Mobile mobile, Referentiel referentiel, XYChart.Series<Number, Number> series) {
+	private Mesure mesure;
+	public Tracker(Mobile mobile, Referentiel referentiel, XYChart.Series<Number, Number> series, Mesure mesure) {
 		this.mobile = mobile;
 		this.referentiel = referentiel;
 		this.series = series;
+		this.mesure = mesure;
 		this.trajectoire = new Trajectoire(referentiel, mobile, series);
 	}
 	
@@ -69,9 +72,12 @@ public class Tracker {
             CvPoint3D32f circle = new CvPoint3D32f(cvGetSeqElem(circles, i));
             CvPoint center = cvPointFrom32f(new CvPoint2D32f(circle.x(), circle.y()));
             Point point = new Point(circle.x(), circle.y(), timecode);
-            
-            if(referentiel.checkCordonne(point)) 
+            float rad = circle.z();
+            if(referentiel.checkCordonne(point)) {
+            		mesure.addRadius(rad);
             		addPointToTrajectoire(point);
+            }
+            	
             
         }
        	cvReleaseImage(detectThrs);
