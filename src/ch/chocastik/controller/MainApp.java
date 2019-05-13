@@ -60,26 +60,12 @@ public class MainApp extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 	    this.primaryStage.setTitle("CHOCastik");
-	    //initRoot();
 	    showAcceuil(); 
 	}
 	/**
 	 * Affichage du layout root
 	 */
-	/*
-	public void initRoot() {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/rootFX.fxml"));
-			rootLayout = (BorderPane) loader.load();
-            Scene scene = new Scene(rootLayout);
-            primaryStage.setScene(scene);
-            primaryStage.show();
-		}catch (Exception e) {
-			 e.printStackTrace();
-		}
-	}
-	*/
-	
+
 	public void showAcceuil() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/accueil/AccueilFX.fxml"));

@@ -7,7 +7,7 @@ public class Mesure {
 		private int maxPixelX;
 		private int pixelXOrigine;
 		private int maxPixelY;
-		private 
+
 		public void transformPointToRealPoint(Point point) {
 			float coef = (distanceRelle/nbPixel);
 			point.setX(point.getX()*coef);
