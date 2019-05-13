@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitMenuButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.accueil.AccueilController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.accueil.AccueilController">
    <children>
-      <AnchorPane layoutX="42.0" layoutY="30.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="42.0" layoutY="30.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ImageView fitHeight="400.0" fitWidth="600.0">
+            <Label layoutX="33.0" layoutY="31.0" prefHeight="251.0" prefWidth="735.0" text="CH   Castik">
+               <font>
+                  <Font name="Arial Black" size="120.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="183.0" fitWidth="242.0" layoutX="149.0" layoutY="105.0">
                <image>
-                  <Image url="@../../../../../../../../../Downloads/13600.jpg" />
+                  <Image url="@../Images/ChocastikLOGO.png" />
                </image>
             </ImageView>
+            <SplitMenuButton fx:id="SelectionCam" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" layoutX="219.0" layoutY="353.0" mnemonicParsing="false" text="Séléctionner une caméra" AnchorPane.leftAnchor="219.0" AnchorPane.rightAnchor="255.0">
+               <font>
+                  <Font name="Arial Black" size="19.0" />
+               </font>
+            </SplitMenuButton>
+            <JFXButton fx:id="BStartAcc" layoutX="307.0" layoutY="431.0" style="-fx-background-color: #23D2DF;" text="Démarrer" textFill="WHITE" AnchorPane.rightAnchor="343.0">
+               <font>
+                  <Font name="Arial Black" size="23.0" />
+               </font>
+            </JFXButton>
          </children>
       </AnchorPane>
-      <SplitMenuButton fx:id="SelectionCam" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" layoutX="152.0" layoutY="314.0" mnemonicParsing="false"  text="Séléctionner une caméra" />
-      <Button fx:id="BStartAcc" layoutX="418.0" layoutY="314.0" mnemonicParsing="false" onMouseClicked="#OpenCalib" text="Démarer" />
    </children>
 </AnchorPane>
