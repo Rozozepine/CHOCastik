@@ -43,27 +43,23 @@ public class AccueilController {
 
 	
 	@FXML
-	public void OpenCalib(MouseEvent event) throws Exception, PropertyVetoException {
+	public void OpenCalib() throws Exception, PropertyVetoException {
 		CameraDevice.Settings[] cs= cameraSettings.toArray();
 		cs[this.choice].setDeviceNumber(this.choice);
 		System.out.print(cs[this.choice].getDeviceNumber());
    	 	cameraDevices = new CameraDevice(cs[this.choice]);    	
-   	 	
 		this.mainApp.showAnalyse(cameraDevices);
 	}
 		
 	public void setMainApp(MainApp mainApp) {
-	   this.mainApp = mainApp;
-	   
+	   this.mainApp = mainApp;   
 	}
     @FXML
     private void initialize() throws PropertyVetoException, org.bytedeco.javacv.FrameGrabber.Exception{
     	int n = VideoInputFrameGrabber.getDeviceDescriptions().length;
-    	
     	cameraSettings.setQuantity(n);  
     	SelectionCam.setText("Aucune caméras");
 		for (int i = 0; i < n; i++) {
-			
 			MenuItem menuItem = new MenuItem("Device "+i+" : " +VideoInputFrameGrabber.getDeviceDescriptions()[i]);
 			menuItem.setId(Integer.toString(i));
 			menuItem.setOnAction(createChoiceHandler(i));
