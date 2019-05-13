@@ -48,7 +48,7 @@ public class MainApp extends Application {
 
 
 	private Stage primaryStage;
-	private BorderPane rootLayout;
+	//private BorderPane rootLayout;
 	private ObservableList<Mobile> mobileData = FXCollections.observableArrayList();
 	private Referentiel referentiel = new Referentiel();
 	private ArrayList<Tracker> listTraker = new ArrayList<Tracker>();
@@ -60,12 +60,13 @@ public class MainApp extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 	    this.primaryStage.setTitle("CHOCastik");
-	    initRoot();
+	    //initRoot();
 	    showAcceuil(); 
 	}
 	/**
 	 * Affichage du layout root
 	 */
+	/*
 	public void initRoot() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/rootFX.fxml"));
@@ -77,13 +78,17 @@ public class MainApp extends Application {
 			 e.printStackTrace();
 		}
 	}
+	*/
+	
 	public void showAcceuil() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/accueil/AccueilFX.fxml"));
 			AnchorPane acceuil = (AnchorPane) loader.load();
-			rootLayout.setCenter(acceuil);
 	        AccueilController controller = loader.getController();
 	        controller.setMainApp(this);
+			Scene scene = new Scene(acceuil);
+            primaryStage.setScene(scene);
+            primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -92,7 +97,9 @@ public class MainApp extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/analyse/AnalyseFX.fxml"));
 			AnchorPane analyse = (AnchorPane) loader.load();
-			rootLayout.setCenter(analyse);
+			Scene scene = new Scene(analyse);
+            primaryStage.setScene(scene);
+            primaryStage.show();
 			AnalyseController controller = loader.getController();
 			controller.setMainApp(this);
 			controller.dsetCameraChoice(cam);
