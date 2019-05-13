@@ -19,7 +19,6 @@
                <items>
                   <MenuItem fx:id="itemGlisseur" mnemonicParsing="false" onAction="#handleGlisseur" text="Glisseur" />
                   <MenuItem fx:id="itemReferentiel" mnemonicParsing="false" onAction="#handleReferentiel" text="Referentiel" />
-                  <MenuItem fx:id="itemMesure" mnemonicParsing="false" onAction="#handleMesure" text="Mesure" />
                </items></Menu>
         </menus>
       </MenuBar>

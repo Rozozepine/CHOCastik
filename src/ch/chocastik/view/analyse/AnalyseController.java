@@ -158,10 +158,7 @@ public class AnalyseController {
 	public void handleReferentiel() {
 		mainApp.showAddReferentiel(image);
 	}
-	@FXML
-	public void handleMesure() {
-		mainApp.showAddMesure(image);
-	}
+
 	@FXML
 	public void handleExportAll() {
 		if(mainApp.getPileImage().isEmpty()) {
@@ -276,7 +273,6 @@ public class AnalyseController {
               while(mainApp.getThreadCaptureFlag()) {
             	 frame = grabber.grab();  
             	 videoTS = System.currentTimeMillis() - startTime;
-            	 System.out.println(videoTS);
               	 if(frame == null) {
                		 break;
               	  }else {

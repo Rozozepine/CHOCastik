@@ -69,6 +69,7 @@ public class Tracker {
             CvPoint3D32f circle = new CvPoint3D32f(cvGetSeqElem(circles, i));
             CvPoint center = cvPointFrom32f(new CvPoint2D32f(circle.x(), circle.y()));
             Point point = new Point(circle.x(), circle.y(), timecode);
+            
             if(referentiel.checkCordonne(point)) 
             		addPointToTrajectoire(point);
             
