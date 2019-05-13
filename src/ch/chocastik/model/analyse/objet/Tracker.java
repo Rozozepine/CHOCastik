@@ -18,6 +18,7 @@ import static org.bytedeco.javacpp.opencv_imgproc.cvHoughCircles;
 import static org.bytedeco.javacpp.opencv_imgproc.cvSmooth;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.bytedeco.javacpp.opencv_core.CvMemStorage;
 import org.bytedeco.javacpp.opencv_core.CvPoint;
@@ -29,18 +30,26 @@ import org.bytedeco.javacpp.opencv_core.IplImage;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 
+import ch.chocastik.controller.MainApp;
+import javafx.application.Platform;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
+
 public class Tracker {
 	private OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
 	private Mobile mobile;
-	private ArrayList<Trajectoire> listOfTrajectoire;
-	
-	public Tracker(Mobile mobile) {
+	private Trajectoire trajectoire;
+	private Referentiel referentiel;
+	private  XYChart.Series<Number, Number> series;
+	public Tracker(Mobile mobile, Referentiel referentiel, XYChart.Series<Number, Number> series) {
 		this.mobile = mobile;
-		
+		this.referentiel = referentiel;
+		this.series = series;
+		this.trajectoire = new Trajectoire(referentiel, mobile, series);
 	}
-	public void detectCircle(Frame frame) {
+	
+	public void detectCircle(IplImage imgSrc, long timecode) {
 		CvMemStorage mem = CvMemStorage.create();
-		IplImage imgSrc = converter.convert(frame);
 		IplImage detectThrs = getThresholdImage(imgSrc);
 		IplImage WorkingImage = cvCreateImage(detectThrs.asCvMat().cvSize(), IPL_DEPTH_8U, 1);   
         cvErode(detectThrs, WorkingImage, null, mobile.getErodeCount());    
@@ -57,26 +66,41 @@ public class Tracker {
         	    mobile.getMaxRad() //max radius
         );	
         for(int i = 0; i < circles.total(); i++){
-        	
             CvPoint3D32f circle = new CvPoint3D32f(cvGetSeqElem(circles, i));
             CvPoint center = cvPointFrom32f(new CvPoint2D32f(circle.x(), circle.y()));
-            int radius = Math.round(circle.z());  
-            if(circle.x() > 0 && circle.y() > 0) {
-            System.out.println("Center of the circle "+i+" " +circle.x()+"-"+circle.y());
-            }
-            cvCircle(imgSrc, center, radius, CvScalar.BLUE, 6, CV_AA, 0);    
+            Point point = new Point(circle.x(), circle.y(), timecode);
+            
+            if(referentiel.checkCordonne(point)) 
+            		addPointToTrajectoire(point);
+            
         }
+       	cvReleaseImage(detectThrs);
+       	cvReleaseImage(WorkingImage);
 	}
-	public IplImage getThresholdImage(IplImage orgImg) {
+	private void addPointToTrajectoire(Point point) {
+		if(getTrajectoire() == null) {
+			setTrajectoire(new Trajectoire(this.referentiel, this.mobile, series));
+			getTrajectoire().addPoint(point);
+		}else{
+			getTrajectoire().addPoint(point);
+		}
+	}
+	private IplImage getThresholdImage(IplImage orgImg) {
 		IplImage imgThreshold = cvCreateImage(orgImg.asCvMat().cvSize(), 8, 1);
 		IplImage imgHSV = cvCreateImage(orgImg.asCvMat().cvSize(), 8, 3);
 		cvCvtColor(orgImg, imgHSV, CV_BGR2HSV);
 		cvInRangeS(imgHSV, mobile.getHsvMin(), mobile.getHsvMax(), imgThreshold);
-    	cvReleaseImage(imgHSV);
     	cvSmooth(imgThreshold, imgThreshold, CV_MEDIAN, 15,0,0,0);
-    	// save
+       	cvReleaseImage(imgHSV);
     	return imgThreshold;
 	}
 
+	public Trajectoire getTrajectoire() {
+		return trajectoire;
+	}
+
+	public void setTrajectoire(Trajectoire trajectoire) {
+		this.trajectoire = trajectoire;
+	}
 	}
 

@@ -1,49 +1,74 @@
 package ch.chocastik.model.analyse.objet;
 
+import org.bytedeco.javacpp.opencv_core.IplImage;
 import org.bytedeco.javacv.Frame;
 
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
+
 public class Point {
-	private int x;
-	private int y;
-	private Frame frame;
-	private int timecode;
-	
-	public Point(int x, int y, Frame frame, int timecode) {
-		this.x = x;
-		this.y = y;
-		this.frame = frame;
-		this.timecode = timecode;
+	private SimpleFloatProperty x;
+	private SimpleFloatProperty y;
+	private SimpleLongProperty timecode;
+
+	public Point(float x, float y, long timecode) {
+		this.x = new SimpleFloatProperty(x);
+		this.y = new SimpleFloatProperty(y);
+		this.timecode = new  SimpleLongProperty(timecode);
+
 	}
 
-	public Frame getFrame() {
-		return frame;
+	public long getTimecode() {
+		return timecode.get();
 	}
 
-	public void setFrame(Frame frame) {
-		this.frame = frame;
+	public void setTimecode(long timecode) {
+		this.timecode.set(timecode);
 	}
 
-	public int getTimecode() {
-		return timecode;
+	public float getY() {
+		return y.get();
 	}
 
-	public void setTimecode(int timecode) {
-		this.timecode = timecode;
+	public void setY(float y) {
+		this.y.set(y);
 	}
 
-	public int getY() {
-		return y;
+	public float getX() {
+		return x.get();
 	}
 
-	public void setY(int y) {
-		this.y = y;
+	public void setX(float x) {
+		this.x.set(x);
 	}
-
-	public int getX() {
-		return x;
+    public LongProperty timeProperty() {
+        return timecode;
+    }
+    public FloatProperty yProperty() {
+        return y;
+    }
+    public FloatProperty xProperty() {
+        return x;
+    }
+	public double getDistance(Point point) {
+		return Math.sqrt(Math.pow((point.getX() - this.x.get()),2) + Math.pow((point.getY()-this.y.get()),2));
 	}
-
-	public void setX(int x) {
-		this.x = x;
+	@Override
+	public boolean equals(Object other){
+	    if (other == null) 
+	    	return false;
+	    if (other == this) 
+	    	return true;
+	    if (!(other instanceof Point))
+	    	return false;
+	    Point point = (Point) other;
+	    if(this.getTimecode() == point.getTimecode())
+	    	return true;
+	    else
+	    	return false;
 	}
 }
