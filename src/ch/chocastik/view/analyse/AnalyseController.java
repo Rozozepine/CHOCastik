@@ -202,7 +202,7 @@ public class AnalyseController {
 			Tab tab = new Tab();
 			tab.setText(mob.getName());
 		
-			Tracker tracker = new Tracker(mob, mainApp.getReferentiel(), series);
+			Tracker tracker = new Tracker(mob, mainApp.getReferentiel(), series, mainApp.getMesure());
 			TableView<Point> table = new TableView<Point>();
 			TableColumn<Point,Float> xCol = new TableColumn<Point, Float>("X");
 			TableColumn<Point,Float> yCol = new TableColumn<Point,Float>("Y");
