@@ -238,7 +238,6 @@ public class AnalyseController {
 	 * bloque ou debloque tout les menu
 	 */
 	private void setMenuDisable(boolean value) {
-		this.itemMesure.setDisable(value);
 		this.itemReferentiel.setDisable(value);
 		this.itemGlisseur.setDisable(value);
 	}

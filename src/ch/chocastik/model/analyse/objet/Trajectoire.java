@@ -50,15 +50,16 @@ public class Trajectoire {
 				this.listOfPoint.retainAll(traker.getTrajectoire().getListOfPoint());
 			}
 		}
+		mesure.calculateNbPixel();
 		try {
 			PrintWriter writer = new PrintWriter("C:\\Users\\Rose\\Documents\\Projet\\Unige\\CHOCastik\\Resultat\\"+mobile.getName()+".txt");
 			for(Point point: listOfPoint) {
-				//mesure.transformPointToRealPoint(point);
+				mesure.transformPointToRealPoint(point);
 				writer.println(point.getTimecode()+":"+point.getX()+":"+point.getY());
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}
