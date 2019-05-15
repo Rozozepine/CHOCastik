@@ -5,12 +5,13 @@ import java.util.ArrayList;
 public class Mesure {
 		private int nbPixel = 0;
 		private float distanceRelle = 10;
+		private float coef;
 		private ArrayList<Float> listRad = new ArrayList<Float>();
 		
 		public void transformPointToRealPoint(Point point) {
-			float coef = (distanceRelle/nbPixel);
-			point.setX(point.getX()*coef);
-			point.setY(point.getY()*coef);
+			setCoef((getDistanceRelle()/getNbPixel()));
+			point.setX(point.getX()*getCoef());
+			point.setY(point.getY()*getCoef());
 			
 		}
 		
@@ -23,7 +24,31 @@ public class Mesure {
 			for(Float rad: listRad)
 				somme = rad + somme;
 			somme = somme/listRad.size();
-			this.nbPixel = Math.round(somme);
+			this.setNbPixel(Math.round(somme));
+		}
+
+		public float getDistanceRelle() {
+			return distanceRelle;
+		}
+
+		public void setDistanceRelle(float distanceRelle) {
+			this.distanceRelle = distanceRelle;
+		}
+
+		public int getNbPixel() {
+			return nbPixel;
+		}
+
+		public void setNbPixel(int nbPixel) {
+			this.nbPixel = nbPixel;
+		}
+
+		public float getCoef() {
+			return coef;
+		}
+
+		public void setCoef(float coef) {
+			this.coef = coef;
 		}
 
 }
