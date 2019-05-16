@@ -190,6 +190,7 @@ public class AnalyseController {
 		}
 	}
 	private void deleteAllDataGraph() {
+		mainApp.getPileImage().removeAll(mainApp.getPileImage());
 		tabPane.getTabs().removeAll(tabPane.getTabs());
 		graphiquePoint.getData().removeAll(graphiquePoint.getData());			
 	}
@@ -258,11 +259,12 @@ public class AnalyseController {
   	   playThread = new Thread(new Runnable() { public void run() {
   		   try {
   			  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
+  		
   			  final FrameGrabber grabber =  FrameGrabber.createDefault(setting.getDeviceNumber()); // on crée le grabber 
   			  final int captureWidth = 1920;
   			  final int captureHeight = 1080;
   			  grabber.setFrameRate(60);
-
+  		
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
   			  grabber.start(); // on le démarre 
   			  conteneur.setMinWidth(grabber.getImageWidth()); 
@@ -279,7 +281,8 @@ public class AnalyseController {
               		 //grabbedImage = choiceCam.undistort(grabbedImage);
               		 frame = converterToIplImage.convert(grabbedImage);
               		 frame.timestamp = System.currentTimeMillis();
-              		 traitement(frame);
+              		 if(mainApp.getThreadAnalyseFlag())
+              			 traitement(frame);
               		 image = SwingFXUtils.toFXImage(converter.convert(frame), null);
               		 Platform.runLater(() -> {
               		    	 RetourCam.setImage(image);

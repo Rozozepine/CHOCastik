@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Mesure {
 		private int nbPixel = 0;
-		private float distanceRelle = 10;
+		private float distanceRelle = 400;
 		private float coef;
 		private ArrayList<Float> listRad = new ArrayList<Float>();
 		
