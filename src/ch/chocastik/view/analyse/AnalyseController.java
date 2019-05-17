@@ -197,7 +197,7 @@ public class AnalyseController {
 	private void creatDataGraph() {
 		for(Mobile mob: mainApp.getMobileData()) {	
 			XYChart.Series<Number, Number> series = new XYChart.Series<>();
-			series.setName(mob.getName()); // TODO Regler probléme ajout de données
+			series.setName(mob.getName()); // TODO Regler problï¿½me ajout de donnï¿½es
 			graphiquePoint.getData().add(series);
 			Tab tab = new Tab();
 			tab.setText(mob.getName());
@@ -243,7 +243,7 @@ public class AnalyseController {
 	}
 	// Methode de l'objet
 	/**
-	 * Transmet à thread s'occupant des calculs les frame
+	 * Transmet ï¿½ thread s'occupant des calculs les frame
 	 * @param frame
 	 */
 	public void traitement(Frame frame) {
@@ -252,19 +252,19 @@ public class AnalyseController {
 		}	
 	}
 	/**
-	 * Crée le Thread s'occupant de la camera 
+	 * Crï¿½e le Thread s'occupant de la camera 
 	 */
 	public void threadCam() {
   	   playThread = new Thread(new Runnable() { public void run() {
   		   try {
   			  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
-  			  final FrameGrabber grabber =  FrameGrabber.createDefault(setting.getDeviceNumber()); // on crée le grabber 
+  			  final FrameGrabber grabber =  FrameGrabber.createDefault(setting.getDeviceNumber()); // on crï¿½e le grabber 
   			  final int captureWidth = 1920;
   			  final int captureHeight = 1080;
   			  grabber.setFrameRate(60);
 
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
-  			  grabber.start(); // on le démarre 
+  			  grabber.start(); // on le demarre 
   			  conteneur.setMinWidth(grabber.getImageWidth()); 
   			  conteneur.setMinHeight(grabber.getImageHeight());
   			  long startTime = System.currentTimeMillis();

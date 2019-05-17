@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXColorPicker?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Box?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="1050.0" prefWidth="1680.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="preparationController">
+   <children>
+      <Label layoutX="639.0" layoutY="36.0" text="Préparation" AnchorPane.topAnchor="36.0">
+         <font>
+            <Font name="Arial Black" size="63.0" />
+         </font>
+      </Label>
+      <Box cache="true" cacheHint="SCALE" cullFace="FRONT" depth="100" height="500.0" layoutX="841.0" layoutY="540.0" width="700.0" AnchorPane.bottomAnchor="260.0" AnchorPane.topAnchor="290.0" />
+      <Label layoutX="54.0" layoutY="251.0" text="1. Choix du référentiel">
+         <font>
+            <Font name="Arial Black" size="27.0" />
+         </font>
+      </Label>
+      <GridPane layoutX="60.0" layoutY="411.0" prefHeight="68.0" prefWidth="329.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+             <Label alignment="BOTTOM_RIGHT" contentDisplay="BOTTOM" nodeOrientation="LEFT_TO_RIGHT" text="Cordonnée X" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS" GridPane.halignment="CENTER" GridPane.hgrow="SOMETIMES" GridPane.valignment="BOTTOM">
+               <font>
+                  <Font name="Arial Black" size="15.0" />
+               </font></Label>
+                              <Label text="Cordonnée Y" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+               <font>
+                  <Font name="Arial Black" size="15.0" />
+               </font></Label>
+            <JFXTextField GridPane.columnIndex="1" />
+            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+      <Label layoutX="1284.0" layoutY="251.0" text="2. Entrer les glisseurs">
+         <font>
+            <Font name="Arial Black" size="26.0" />
+         </font>
+      </Label>
+      <JFXButton layoutX="491.0" layoutY="918.0" prefHeight="58.0" prefWidth="700.0" style="-fx-background-color: #23D2DF; -fx-background-radius: 20;" text="passer à l'analyse" textFill="WHITE" AnchorPane.bottomAnchor="74.0">
+         <font>
+            <Font name="Arial Black" size="27.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="60.0" layoutY="333.0" style="-fx-background-color: #23D2DF; -fx-background-radius: 20;" text="séléctionner l'origine sur l'image" textFill="WHITE">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font>
+      </JFXButton>
+      <GridPane alignment="TOP_CENTER" cache="true" cacheShape="false" focusTraversable="true" hgap="5.0" layoutX="1242.0" layoutY="317.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="68.0" prefWidth="390.0" scaleShape="false" vgap="5.0" AnchorPane.bottomAnchor="665.0" AnchorPane.leftAnchor="1242.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="317.0">
+                    <columnConstraints>
+                      <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="ALWAYS" maxWidth="271.0" minWidth="100.0" prefWidth="187.0" />
+                      <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="ALWAYS" maxWidth="192.0" prefWidth="188.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Couleur du glisseur" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Arial Black" size="15.0" />
+               </font></Label>
+                        <Label prefHeight="20.0" prefWidth="146.0" text="Nom du glisseur">
+               <font>
+                  <Font name="Arial Black" size="15.0" />
+               </font></Label>
+            <TextField GridPane.columnIndex="1" />
+            <JFXColorPicker editable="true" promptText="blanc" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXColorPicker>
+                     </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+                  </GridPane>
+      <JFXButton layoutX="64.0" layoutY="577.0" prefHeight="39.0" prefWidth="340.0" style="-fx-background-color: #23D2DF; -fx-background-radius: 20;" text="Séléctionner le stop sur l'image" textFill="WHITE">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font>
+    
+      </JFXButton>
+      <GridPane layoutX="60.0" layoutY="635.0" prefHeight="58.0" prefWidth="329.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label text="Cordonnée X" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+               <font>
+                  <Font name="Arial Black" size="15.0" />
+               </font></Label>
+            <Label text="Cordonnée Y" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+               <font>
+                  <Font name="Arial Black" size="15.0" />
+               </font></Label>
+            <JFXTextField GridPane.columnIndex="1" />
+            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+      <JFXButton layoutX="1501.0" layoutY="411.0" style="-fx-background-color: #23D2DF; -fx-background-radius: 20;" text="Enregistrer" textFill="WHITE">
+         <font>
+            <Font name="Arial Black" size="15.0" />
+         </font></JFXButton>
+      <JFXListView layoutX="1246.0" layoutY="525.0" prefHeight="242.0" prefWidth="367.0" />
+      <JFXButton layoutX="1249.0" layoutY="777.0" style="-fx-background-color: #23D2DF; -fx-background-radius: 20;" text="Modifier" textFill="WHITE">
+         <font>
+            <Font name="Arial Black" size="15.0" />
+         </font></JFXButton>
+      <JFXButton layoutX="1534.0" layoutY="776.0" style="-fx-background-color: #23D2DF; -fx-background-radius: 20;" text="Effacer" textFill="WHITE">
+         <font>
+            <Font name="Arial Black" size="15.0" />
+         </font></JFXButton>
+      <Label layoutX="1249.0" layoutY="502.0" text="Glisseurs enregistrés :">
+         <font>
+            <Font name="Arial Black" size="15.0" />
+         </font>
+      </Label>
+      <JFXButton layoutX="1239.0" layoutY="411.0" style="-fx-background-color: #23D2DF; -fx-background-radius: 20;" text="Avancés" textFill="WHITE">
+         <font>
+            <Font name="Arial Black" size="15.0" />
+         </font></JFXButton>
+      <ImageView fx:id="retourCam" fitHeight="500.0" fitWidth="700.0" layoutX="491.0" layoutY="290.0" pickOnBounds="true" preserveRatio="true" />
+      <Group layoutX="1528.0" layoutY="36.0">
+         <children>
+            <ImageView fitHeight="84.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/HelpIcon.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="12.0" layoutY="33.0" text="HELP!" textFill="#23d2df">
+               <font>
+                  <Font name="Arial Black" size="17.0" />
+               </font>
+            </Label>
+            <JFXButton layoutX="4.0" layoutY="27.0" prefHeight="40.0" prefWidth="68.0" text=" " />
+         </children>
+      </Group>
+   </children>
+</AnchorPane>

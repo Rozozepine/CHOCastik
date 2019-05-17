@@ -10,17 +10,14 @@ import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_core.IplImage;
-import org.bytedeco.javacpp.opencv_objdetect;
 import org.bytedeco.javacv.CameraDevice;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.MarkedPlane;
 import org.bytedeco.javacv.Marker;
 import org.bytedeco.javacv.MarkerDetector;
 import org.bytedeco.javacv.ProjectorSettings;
-import org.opencv.core.*;
-
-
+import org.opencv.core.Core;
+import org.opencv.objdetect.Objdetect;
 
 import ch.chocastik.view.accueil.AccueilController;
 import ch.chocastik.view.analyse.AddGlisseurController;
@@ -215,7 +212,10 @@ public class MainApp extends Application {
 	 */
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		 Loader.load(opencv_objdetect.class);
+		 Loader.load(Objdetect.class);
+		Point point = new Point(1, 2, 10);
+		Point point2 = new Point(1, 3, 10);
+		System.out.print(point.equals(point2));
 		launch(args);
 	}
 
