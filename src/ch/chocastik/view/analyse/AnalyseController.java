@@ -63,8 +63,8 @@ import static org.bytedeco.javacpp.opencv_imgproc.CV_FONT_HERSHEY_PLAIN;
 
 public class AnalyseController {
 	// attribut FXML
-    @FXML
-    private AnchorPane conteneur;
+ /*   @FXML
+    private AnchorPane conteneur; */
     @FXML
     private ImageView RetourCam;
     @FXML
@@ -108,8 +108,7 @@ public class AnalyseController {
     private void initialize() {
     	this.AxeX.setLabel("Axe X");
     	this.AxeY.setLabel("Axe Y");
-    	RetourCam.fitWidthProperty().bind(conteneur.widthProperty());
-    	RetourCam.fitHeightProperty().bind(conteneur.heightProperty());
+
     }
     @FXML
     public void startCamera() {
@@ -260,13 +259,16 @@ public class AnalyseController {
   		   try {
   			  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
   			
-  			  final  OpenCVFrameGrabber grabber =   OpenCVFrameGrabber.createDefault(setting.getDeviceNumber()); // on crée le grabber 
+  			  final  VideoInputFrameGrabber grabber = VideoInputFrameGrabber.createDefault(setting.getDeviceNumber()); // on crée le grabber 
   			  grabber.setFrameRate(60);
-  		
+  			  grabber.setImageHeight(1920);
+  			  grabber.setImageWidth(1080);
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
   			  grabber.start(); // on le démarre 
-  			  conteneur.setMinWidth(grabber.getImageWidth()); 
-  			  conteneur.setMinHeight(grabber.getImageHeight());
+
+  			  
+  			  
+  			  
   			  long startTime = System.currentTimeMillis();
   			  long videoTS;
               while(mainApp.getThreadCaptureFlag()) {

@@ -79,8 +79,6 @@ public class AddGlisseurController {
 		
 	}
 	public void setFrame(Image frame) {
-		ColorFrame.setFitWidth(frame.getWidth());
-		ColorFrame.setFitHeight(frame.getHeight());
 		this.frame = frame;
 		ColorFrame.setImage(frame);
 		

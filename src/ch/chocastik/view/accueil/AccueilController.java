@@ -43,7 +43,7 @@ public class AccueilController {
 
 	
 	@FXML
-	public void OpenCalib(MouseEvent event) throws Exception, PropertyVetoException {
+	public void OpenCalib(MouseEvent event) throws Exception, PropertyVetoException, org.bytedeco.javacv.FrameGrabber.Exception {
 		CameraDevice.Settings[] cs= cameraSettings.toArray();
 		cs[this.choice].setDeviceNumber(this.choice);
 		System.out.print(cs[this.choice].getDeviceNumber());
