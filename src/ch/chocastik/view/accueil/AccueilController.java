@@ -10,7 +10,6 @@ import java.util.ResourceBundle;
 import org.bytedeco.javacpp.videoInputLib.videoInput;
 import org.bytedeco.javacv.CameraDevice;
 import org.bytedeco.javacv.CameraSettings;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.VideoInputFrameGrabber;
 import org.bytedeco.javacv.ProjectiveDevice.Exception;

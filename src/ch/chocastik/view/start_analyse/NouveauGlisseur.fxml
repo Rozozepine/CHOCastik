@@ -8,36 +8,33 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.Box?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1650.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="816.0" prefWidth="1287.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Box cullFace="FRONT" depth="100" height="600.0" layoutX="1104.0" layoutY="540.0" width="800.0" />
       <Label layoutX="546.0" layoutY="62.0" text="Nouveau Glisseur">
          <font>
             <Font name="Arial Black" size="58.0" />
          </font>
       </Label>
-      <JFXButton layoutX="704.0" layoutY="907.0" prefHeight="69.0" prefWidth="800.0" style="-fx-background-color: #1EB4BA; -fx-background-radius: 20;" text="Ajouter" textFill="WHITE">
+      <JFXButton layoutX="681.0" layoutY="723.0" prefHeight="66.0" prefWidth="459.0" style="-fx-background-color: #1EB4BA; -fx-background-radius: 20;" text="Ajouter" textFill="WHITE">
          <font>
             <Font name="Arial Black" size="33.0" />
          </font>
       </JFXButton>
-      <JFXColorPicker layoutX="371.0" layoutY="240.0" prefHeight="51.0" prefWidth="145.0" />
+      <JFXColorPicker layoutX="334.0" layoutY="240.0" prefHeight="51.0" prefWidth="145.0" />
       <Label layoutX="131.0" layoutY="240.0" prefHeight="25.0" prefWidth="160.0" text="Couleur du glisseur">
          <font>
-            <Font name="Arial Black" size="14.0" />
+            <Font name="Arial Black" size="16.0" />
          </font>
       </Label>
       <Label layoutX="131.0" layoutY="296.0" text="Nom du glisseur">
          <font>
-            <Font name="Arial Black" size="22.0" />
+            <Font name="Arial Black" size="16.0" />
          </font>
       </Label>
-      <JFXTextField layoutX="368.0" layoutY="291.0" />
+      <JFXTextField layoutX="339.0" layoutY="296.0" />
       <Label layoutX="187.0" layoutY="395.0" text="Réglages avancés">
          <font>
             <Font name="Arial Black" size="22.0" />
@@ -46,7 +43,7 @@
       <Line endX="220.0" layoutX="305.0" layoutY="380.0" startX="-197.0" />
       <Label layoutX="131.0" layoutY="460.0" text="start">
          <font>
-            <Font name="Arial Black" size="20.0" />
+            <Font name="Arial Black" size="16.0" />
          </font>
       </Label>
       <Label layoutX="131.0" layoutY="516.0" text="Nombre de dilatation">
@@ -56,20 +53,19 @@
       </Label>
       <Label layoutX="129.0" layoutY="573.0" text="Nombre d'érosion">
          <font>
-            <Font name="Arial Black" size="12.0" />
+            <Font name="Arial Black" size="16.0" />
          </font>
       </Label>
-      <JFXTextField layoutX="315.0" layoutY="455.0" />
-      <JFXTextField layoutX="315.0" layoutY="511.0" />
-      <JFXTextField layoutX="315.0" layoutY="577.0" />
-      <Label layoutX="131.0" layoutY="639.0" text="Couleur de fin">
+      <JFXTextField layoutX="339.0" layoutY="460.0" />
+      <JFXTextField layoutX="339.0" layoutY="516.0" />
+      <JFXTextField layoutX="339.0" layoutY="573.0" />
+      <Label layoutX="129.0" layoutY="625.0" text="Tolerance">
          <font>
-            <Font name="Arial Black" size="17.0" />
+            <Font name="Arial Black" size="16.0" />
          </font>
       </Label>
-      <JFXColorPicker layoutX="315.0" layoutY="653.0" prefWidth="151.0" />
-      <ImageView fitHeight="600.0" fitWidth="800.0" layoutX="704.0" layoutY="243.0" pickOnBounds="true" preserveRatio="true" />
-      <Group layoutX="1370.0" layoutY="47.0">
+      <ImageView fitHeight="360.0" fitWidth="640.0" layoutX="567.0" layoutY="187.0" pickOnBounds="true" preserveRatio="true" />
+      <Group layoutX="1122.0" layoutY="14.0">
          <children>
             <ImageView fitHeight="142.0" fitWidth="151.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -84,5 +80,6 @@
             <JFXButton layoutX="11.0" layoutY="42.0" prefHeight="72.0" prefWidth="109.0" text=" " />
          </children>
       </Group>
+      <JFXTextField layoutX="339.0" layoutY="625.0" />
    </children>
 </AnchorPane>
