@@ -31,7 +31,7 @@ import org.bytedeco.javacv.BufferRing.ReleasableBuffer;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
 import ch.chocastik.controller.MainApp;
-
+import ch.chocastik.model.analyse.objet.Point;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -44,6 +44,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -56,7 +57,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import ch.chocastik.model.analyse.Analyse;
 import ch.chocastik.model.analyse.objet.*;
-import ch.chocastik.model.analyse.objet.Point;
+
 import static org.bytedeco.javacpp.opencv_imgproc.cvPutText;
 import static org.bytedeco.javacpp.opencv_imgproc.cvInitFont;
 import static org.bytedeco.javacpp.opencv_imgproc.CV_FONT_HERSHEY_PLAIN;
@@ -89,6 +90,13 @@ public class AnalyseController {
     private NumberAxis AxeY;
     @FXML 
     private TabPane tabPane;
+	@FXML
+    private TableView<Mobile> tableMobile;
+	@FXML
+	private  TableColumn<Mobile, String> colName;
+	@FXML
+	private  TableColumn<Mobile, String> colCouleur;
+
     
     // Attribut de l'Objet
     private static volatile Thread playThread;
@@ -108,8 +116,8 @@ public class AnalyseController {
     private void initialize() {
     	this.AxeX.setLabel("Axe X");
     	this.AxeY.setLabel("Axe Y");
-    	RetourCam.fitWidthProperty().bind(conteneur.widthProperty());
-    	RetourCam.fitHeightProperty().bind(conteneur.heightProperty());
+		colName.setCellValueFactory(cellData -> cellData.getValue().nameExportProperty());
+		colCouleur.setCellValueFactory(cellData -> cellData.getValue().nameExportProperty());
     }
     @FXML
     public void startCamera() {
@@ -151,10 +159,6 @@ public class AnalyseController {
     	}
     }
 	@FXML
-	public void handleGlisseur() {
-		mainApp.showEditGlisseur(image);
-	}
-	@FXML
 	public void handleReferentiel() {
 		mainApp.showAddReferentiel(image);
 	}
@@ -167,6 +171,48 @@ public class AnalyseController {
 		}
 		
 	}
+	/**
+	 * Action lancé lorsque l'utilisateur clique sur le bouton delete Mobile
+	 */
+	@FXML
+	private void handleDeleteMobile() {
+		int selectIndex = tableMobile.getSelectionModel().getSelectedIndex();
+		tableMobile.getItems().remove(selectIndex);
+	}
+	/**
+	 * Action lancée lorsque l'utilisateur clique sur le bouton Add
+	 */
+	@FXML
+	private void handleNewMobile() {
+		Mobile mobile = new Mobile(Color.BLUE, "Tpn"); // mobile prédifinit 
+		boolean isOk = mainApp.showAddGlisseur(mobile, image); // si il n'y pas d'erreur on l'ajoute
+		if(isOk) {
+			this.mainApp.getMobileData().add(mobile);
+		}
+	}
+
+	/**
+	 *  Action lancée losrque l'utilisateur clique sur le bouton Edit
+	 */
+	@FXML
+	private void handleEditMobile() {
+		Mobile selectMobile = tableMobile.getSelectionModel().getSelectedItem();
+		// si le mobile selctionnée existe on affiche la fenetre d'ajout avec les parametetre du mobile sinon
+		// on affiche un message d'erreur
+		if(selectMobile != null) {
+			boolean isOk = mainApp.showAddGlisseur(selectMobile, image); // si il n'y pas d'erreur on l'ajoute
+		}else {
+			//rien n'a été selectionnée
+			Alert alert = new Alert(AlertType.WARNING);
+		    alert.initOwner(mainApp.getPrimaryStage());
+		    alert.setTitle("No Selection");
+	        alert.setHeaderText("No Mobile Selected"); 
+	        alert.setContentText("Please select a Mobile in the table.");
+	        alert.showAndWait();
+		}
+		
+	}
+	
 	
 	public void showFrame(Point point) {
 		if(!analyseIsActive) {
@@ -228,7 +274,7 @@ public class AnalyseController {
 	 */
 	public void setMainApp(MainApp mainApp) {
 	        this.mainApp = mainApp;
-
+	        tableMobile.setItems(mainApp.getMobileData());
 	        this.pileFrame = mainApp.getPileImage();
 	}
 	public void dsetCameraChoice(CameraDevice cam) {
@@ -265,8 +311,7 @@ public class AnalyseController {
 
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
   			  grabber.start(); // on le demarre 
-  			  conteneur.setMinWidth(grabber.getImageWidth()); 
-  			  conteneur.setMinHeight(grabber.getImageHeight());
+
   			  long startTime = System.currentTimeMillis();
   			  long videoTS;
               while(mainApp.getThreadCaptureFlag()) {

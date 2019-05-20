@@ -136,29 +136,11 @@ public class AddReferentielleController {
 	 * recuperation de la frame de travail
 	 * @param frame
 	 */
-	public void setFrame(Image frame) {
-		conteneur.setMinWidth(frame.getWidth()); 
-		conteneur.setMinHeight(frame.getHeight());		
+	public void setFrame(Image frame) {		
 		this.frame = frame;
 		referentielFrame.setImage(frame);
 	}
-	private void drawCross(double x, double y, Color color) {
-		Line line1 = new Line();
-		line1.setStartX(x-20);
-		line1.setStartY(y);
-		line1.setEndX(x+20);
-		line1.setEndY(y);
-		Line line2 = new Line();
-		line2.setStartX(x);
-		line2.setStartY(y-20);
-		line2.setEndX(x);
-		line2.setEndY(y+20);
-	    line1.setStroke(color);
-	    line1.setStrokeWidth(2);
-	    line2.setStroke(color);
-	    line2.setStrokeWidth(2);
-		conteneur.getChildren().addAll(line1, line2);
-	}
+
 	/**
 	 * retourne si l'utilisateur à bien cliqué sur validée
 	 * @return
@@ -168,8 +150,7 @@ public class AddReferentielleController {
 	}
 	@FXML
 	private void initialize() {
-		referentielFrame.fitWidthProperty().bind(conteneur.widthProperty());
-    	referentielFrame.fitHeightProperty().bind(conteneur.heightProperty());
+
 	}
 	// Methode de L'objet
 	public void setMainApp(MainApp mainApp) {
