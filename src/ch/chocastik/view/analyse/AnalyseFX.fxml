@@ -14,25 +14,25 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="940.0" prefWidth="1539.0" style="-fx-background-color: #ffffff; -fx-background-radius: 100; -fx-border-radius: 100;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.analyse.AnalyseController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="940.0" prefWidth="1539.0" style="-fx-background-color: #ffffff; -fx-background-radius: 100; -fx-border-radius: 100;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.analyse.AnalyseController">
    <children>
       <SplitPane dividerPositions="0.6597267404033832" prefHeight="940.0" prefWidth="1539.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #ffffff;">
                <children>
-                  <Group AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <Group fx:id="Help" layoutX="412.0" layoutY="66.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="48.0">
                      <children>
-                        <ImageView fitHeight="110.0" fitWidth="168.0" layoutX="423.0" layoutY="-18.0" pickOnBounds="true">
+                        <ImageView fitHeight="110.0" fitWidth="168.0" layoutX="417.0" layoutY="-18.0" pickOnBounds="true">
                            <image>
                               <Image url="@../Images/HelpIcon.png" />
                            </image>
                         </ImageView>
-                        <Label layoutX="441.0" layoutY="16.0" prefHeight="50.0" prefWidth="111.0" text="HELP!" textFill="#17b4bc">
+                        <Label alignment="CENTER" layoutX="431.0" layoutY="12.0" prefHeight="58.0" prefWidth="119.0" text="HELP!" textFill="#17b4bc">
                            <font>
                               <Font name="Arial Black" size="33.0" />
                            </font>
                         </Label>
-                        <JFXButton layoutX="432.0" layoutY="10.0" prefHeight="63.0" prefWidth="130.0" text=" " />
+                        <JFXButton layoutX="426.0" layoutY="15.0" prefHeight="56.0" prefWidth="130.0" text=" " />
                      </children>
                   </Group>
                   <Label layoutX="291.0" layoutY="14.0" prefHeight="143.0" prefWidth="418.0" text="Analyse">
@@ -41,52 +41,59 @@
                      </font>
                   </Label>
                   <Group AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <JFXButton fx:id="StartAnalyse" layoutX="699.0" layoutY="533.0" onAction="#startAnalyse" prefHeight="50.0" prefWidth="199.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Start Analyse !" textFill="WHITE">
+                  <JFXButton fx:id="StartAnalyse" layoutX="709.0" layoutY="664.0" onAction="#startAnalyse" prefHeight="50.0" prefWidth="199.0" style="-fx-background-color: #27AEB6; -fx-background-radius: 20;" text="Start Analyse !" textFill="WHITE">
                      <font>
                         <Font name="Arial Black" size="20.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="Startvideo" layoutX="440.0" layoutY="533.0" onAction="#startCamera" prefHeight="50.0" prefWidth="191.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Start Capture!" textFill="WHITE">
+                  <JFXButton fx:id="Startvideo" layoutX="440.0" layoutY="664.0" onAction="#startCamera" prefHeight="50.0" prefWidth="191.0" style="-fx-background-color: #27AEB6; -fx-background-radius: 20;" text="Start Capture!" textFill="WHITE">
                      <font>
                         <Font name="Arial Black" size="20.0" />
                      </font>
                   </JFXButton>
-                  <Label layoutX="26.0" layoutY="128.0" text="Glisseurs enregistrés">
+                  <Label layoutX="73.0" layoutY="267.0" text="Glisseurs enregistrés">
                      <font>
                         <Font name="Arial Black" size="17.0" />
                      </font>
                   </Label>
-                  <Group layoutX="229.0" layoutY="113.0">
-                     <children>
-                        <ImageView fitHeight="28.0" fitWidth="29.0" layoutX="8.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Images/edit-icon-2375785_960_720.png" />
-                           </image>
-                        </ImageView>
-                        <JFXButton layoutX="11.0" layoutY="2.0" text=" " />
-                     </children>
-                  </Group>
-                  <JFXButton layoutX="25.0" layoutY="525.0" onAction="#handleNewMobile" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Ajouter" textFill="WHITE">
+                  <Group layoutX="229.0" layoutY="113.0" />
+                  <JFXButton layoutX="27.0" layoutY="664.0" onAction="#handleNewMobile" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Ajouter" textFill="WHITE">
                      <font>
                         <Font name="Arial Black" size="13.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton layoutX="130.0" layoutY="525.0" onAction="#handleDeleteMobile" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Supprimer" textFill="WHITE">
+                  <JFXButton layoutX="131.0" layoutY="664.0" onAction="#handleDeleteMobile" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #ff0000; -fx-background-radius: 20;" text="Supprimer" textFill="WHITE">
                      <font>
                         <Font name="Arial Black" size="13.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton layoutX="237.0" layoutY="525.0" onAction="#handleEditMobile" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Modifier" textFill="WHITE">
+                  <JFXButton layoutX="236.0" layoutY="664.0" onAction="#handleEditMobile" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #27AEB6; -fx-background-radius: 20;" text="Modifier" textFill="#f8f8f8">
                      <font>
                         <Font name="Arial Black" size="13.0" />
                      </font>
                   </JFXButton>
-                  <TableView fx:id="tableMobile" layoutX="20.0" layoutY="154.0" prefHeight="360.0" prefWidth="307.0">
+                  <TableView fx:id="tableMobile" layoutX="27.0" layoutY="293.0" prefHeight="360.0" prefWidth="307.0">
                     <columns>
                       <TableColumn fx:id="colName" prefWidth="138.0" text="Nom" />
                       <TableColumn fx:id="colCouleur" prefWidth="168.0" text="Couleur" />
                     </columns>
                   </TableView>
+                  <ImageView fx:id="RetourCam" fitHeight="360.0" fitWidth="640.0" layoutX="351.0" layoutY="293.0" pickOnBounds="true" preserveRatio="true" />
+                  <Group layoutX="-396.0" layoutY="64.0">
+                     <children>
+                        <ImageView fitHeight="110.0" fitWidth="168.0" layoutX="423.0" layoutY="-18.0" pickOnBounds="true">
+                           <image>
+                              <Image url="@../Images/HelpIcon.png" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="436.0" layoutY="15.0" prefHeight="54.0" prefWidth="121.0" text="RÉGLAGES" textFill="#17b4bc">
+                           <font>
+                              <Font name="Arial Black" size="19.0" />
+                           </font>
+                        </Label>
+                        <JFXButton layoutX="432.0" layoutY="10.0" prefHeight="63.0" prefWidth="130.0" text=" " />
+                     </children>
+                  </Group>
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -113,12 +120,12 @@
                                    
                                  </tabs>
                               </TabPane>
-                              <JFXButton layoutX="172.0" layoutY="408.0" onAction="#handleExportAll" prefHeight="50.0" prefWidth="174.0" style="-fx-background-color: #23D2DF; -fx-background-radius: 20;" text="Exporter " textFill="WHITE">
+                              <JFXButton layoutX="172.0" layoutY="404.0" onAction="#handleExportAll" prefHeight="50.0" prefWidth="174.0" style="-fx-background-color: #27AEB6; -fx-background-radius: 20;" text="Exporter " textFill="WHITE">
                                  <font>
                                     <Font name="Arial Black" size="20.0" />
                                  </font>
                               </JFXButton>
-                              <Label prefHeight="28.0" prefWidth="214.0" text="Tableau de résultat">
+                              <Label layoutX="152.0" prefHeight="28.0" prefWidth="214.0" text="Tableau de résultat">
                                  <font>
                                     <Font name="Arial Black" size="17.0" />
                                  </font>
@@ -131,6 +138,5 @@
             </AnchorPane>
         </items>
       </SplitPane>
-      <ImageView fx:id="RetourCam" fitHeight="360.0" fitWidth="640.0" layoutX="348.0" layoutY="154.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

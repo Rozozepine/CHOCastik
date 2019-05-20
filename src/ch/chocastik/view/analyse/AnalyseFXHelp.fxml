@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.ScatterChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="940.0" prefWidth="1539.0" style="-fx-background-color: #ffffff; -fx-background-radius: 100; -fx-border-radius: 100;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.analyse.AnalyseController">
+   <children>
+      <SplitPane dividerPositions="0.6597267404033832" prefHeight="940.0" prefWidth="1539.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <Group AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <children>
+                        <ImageView fitHeight="110.0" fitWidth="168.0" layoutX="423.0" layoutY="-18.0" pickOnBounds="true">
+                           <image>
+                              <Image url="@../Images/HelpIcon.png" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="441.0" layoutY="16.0" prefHeight="50.0" prefWidth="111.0" text="HELP!" textFill="#17b4bc">
+                           <font>
+                              <Font name="Arial Black" size="33.0" />
+                           </font>
+                        </Label>
+                        <JFXButton layoutX="432.0" layoutY="10.0" prefHeight="63.0" prefWidth="130.0" text=" " />
+                     </children>
+                  </Group>
+                  <Label layoutX="291.0" layoutY="14.0" prefHeight="143.0" prefWidth="418.0" text="Analyse">
+                     <font>
+                        <Font name="Arial Black" size="90.0" />
+                     </font>
+                  </Label>
+                  <Group AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                  <JFXButton fx:id="StartAnalyse" layoutX="699.0" layoutY="533.0" onAction="#startAnalyse" prefHeight="50.0" prefWidth="199.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Start Analyse !" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Black" size="20.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="Startvideo" layoutX="440.0" layoutY="533.0" onAction="#startCamera" prefHeight="50.0" prefWidth="191.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Start Capture!" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Black" size="20.0" />
+                     </font>
+                  </JFXButton>
+                  <Label layoutX="26.0" layoutY="273.0" text="Glisseurs enregistrés">
+                     <font>
+                        <Font name="Arial Black" size="17.0" />
+                     </font>
+                  </Label>
+                  <Group layoutX="229.0" layoutY="113.0" />
+                  <JFXButton layoutX="25.0" layoutY="670.0" onAction="#handleNewMobile" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Ajouter" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton layoutX="130.0" layoutY="670.0" onAction="#handleDeleteMobile" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Supprimer" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton layoutX="237.0" layoutY="670.0" onAction="#handleEditMobile" prefHeight="38.0" prefWidth="95.0" style="-fx-background-color: #39A100; -fx-background-radius: 20;" text="Modifier" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Black" size="13.0" />
+                     </font>
+                  </JFXButton>
+                  <TableView fx:id="tableMobile" layoutX="20.0" layoutY="299.0" prefHeight="360.0" prefWidth="307.0">
+                    <columns>
+                      <TableColumn fx:id="colName" prefWidth="138.0" text="Nom" />
+                      <TableColumn fx:id="colCouleur" prefWidth="168.0" text="Couleur" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <SplitPane dividerPositions="0.5" layoutX="70.0" layoutY="239.0" orientation="VERTICAL" prefHeight="938.0" prefWidth="381.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                           <children>
+                              <ScatterChart fx:id="graphiquePoint" layoutX="-115.0" layoutY="51.0" prefHeight="465.0" prefWidth="518.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                <xAxis>
+                                    <NumberAxis fx:id="AxeX" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis fx:id="AxeY" side="LEFT" />
+                                </yAxis>
+                              </ScatterChart>
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                           <children>
+                              <TabPane fx:id="tabPane" prefHeight="465.0" prefWidth="379.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+                                 <tabs>
+                     
+                                   
+                                 </tabs>
+                              </TabPane>
+                              <JFXButton layoutX="172.0" layoutY="408.0" onAction="#handleExportAll" prefHeight="50.0" prefWidth="174.0" style="-fx-background-color: #23D2DF; -fx-background-radius: 20;" text="Exporter " textFill="WHITE">
+                                 <font>
+                                    <Font name="Arial Black" size="20.0" />
+                                 </font>
+                              </JFXButton>
+                              <Label prefHeight="28.0" prefWidth="214.0" text="Tableau de résultat">
+                                 <font>
+                                    <Font name="Arial Black" size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+      <ImageView fx:id="RetourCam" fitHeight="360.0" fitWidth="640.0" layoutX="348.0" layoutY="154.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
+</AnchorPane>
