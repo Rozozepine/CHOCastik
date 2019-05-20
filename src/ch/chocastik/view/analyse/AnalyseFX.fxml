@@ -19,7 +19,6 @@
                <items>
                   <MenuItem fx:id="itemGlisseur" mnemonicParsing="false" onAction="#handleGlisseur" text="Glisseur" />
                   <MenuItem fx:id="itemReferentiel" mnemonicParsing="false" onAction="#handleReferentiel" text="Referentiel" />
-                  <MenuItem fx:id="itemMesure" mnemonicParsing="false" onAction="#handleMesure" text="Mesure" />
                </items></Menu>
         </menus>
       </MenuBar>
@@ -27,13 +26,9 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="346.0" prefWidth="389.0">
                <children>
-                  <AnchorPane fx:id="conteneur" layoutX="14.0" layoutY="14.0">
-                     <children>
-                        <ImageView fx:id="RetourCam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                     </children>
-                  </AnchorPane>
                   <Button fx:id="Startvideo" layoutX="272.0" layoutY="634.0" mnemonicParsing="false" onAction="#startCamera" text="Start" />
                   <Button fx:id="StartAnalyse" layoutX="336.0" layoutY="634.0" mnemonicParsing="false" onAction="#startAnalyse" text="Start Analyse" />
+                  <ImageView fx:id="RetourCam" fitHeight="360.0" fitWidth="640.0" pickOnBounds="true" smooth="false" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>

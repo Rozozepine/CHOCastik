@@ -63,8 +63,8 @@ import static org.bytedeco.javacpp.opencv_imgproc.CV_FONT_HERSHEY_PLAIN;
 
 public class AnalyseController {
 	// attribut FXML
-    @FXML
-    private AnchorPane conteneur;
+ /*   @FXML
+    private AnchorPane conteneur; */
     @FXML
     private ImageView RetourCam;
     @FXML
@@ -108,8 +108,7 @@ public class AnalyseController {
     private void initialize() {
     	this.AxeX.setLabel("Axe X");
     	this.AxeY.setLabel("Axe Y");
-    	RetourCam.fitWidthProperty().bind(conteneur.widthProperty());
-    	RetourCam.fitHeightProperty().bind(conteneur.heightProperty());
+
     }
     @FXML
     public void startCamera() {
@@ -158,10 +157,7 @@ public class AnalyseController {
 	public void handleReferentiel() {
 		mainApp.showAddReferentiel(image);
 	}
-	@FXML
-	public void handleMesure() {
-		mainApp.showAddMesure(image);
-	}
+
 	@FXML
 	public void handleExportAll() {
 		if(mainApp.getPileImage().isEmpty()) {
@@ -193,6 +189,7 @@ public class AnalyseController {
 		}
 	}
 	private void deleteAllDataGraph() {
+
 		tabPane.getTabs().removeAll(tabPane.getTabs());
 		graphiquePoint.getData().removeAll(graphiquePoint.getData());			
 	}
@@ -205,7 +202,7 @@ public class AnalyseController {
 			Tab tab = new Tab();
 			tab.setText(mob.getName());
 		
-			Tracker tracker = new Tracker(mob, mainApp.getReferentiel(), series);
+			Tracker tracker = new Tracker(mob, mainApp.getReferentiel(), series, mainApp.getMesure());
 			TableView<Point> table = new TableView<Point>();
 			TableColumn<Point,Float> xCol = new TableColumn<Point, Float>("X");
 			TableColumn<Point,Float> yCol = new TableColumn<Point,Float>("Y");
@@ -241,7 +238,6 @@ public class AnalyseController {
 	 * bloque ou debloque tout les menu
 	 */
 	private void setMenuDisable(boolean value) {
-		this.itemMesure.setDisable(value);
 		this.itemReferentiel.setDisable(value);
 		this.itemGlisseur.setDisable(value);
 	}
@@ -262,28 +258,28 @@ public class AnalyseController {
   	   playThread = new Thread(new Runnable() { public void run() {
   		   try {
   			  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
-  			  final FrameGrabber grabber =  FrameGrabber.createDefault(setting.getDeviceNumber()); // on crée le grabber 
-  			  final int captureWidth = 1920;
-  			  final int captureHeight = 1080;
+  			
+  			  final  VideoInputFrameGrabber grabber = VideoInputFrameGrabber.createDefault(setting.getDeviceNumber()); // on crée le grabber 
   			  grabber.setFrameRate(60);
-
+  			  grabber.setImageHeight(1920);
+  			  grabber.setImageWidth(1080);
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
   			  grabber.start(); // on le démarre 
-  			  conteneur.setMinWidth(grabber.getImageWidth()); 
-  			  conteneur.setMinHeight(grabber.getImageHeight());
+
+  			  
+  			  
+  			  
   			  long startTime = System.currentTimeMillis();
   			  long videoTS;
               while(mainApp.getThreadCaptureFlag()) {
             	 frame = grabber.grab();  
             	 videoTS = System.currentTimeMillis() - startTime;
-            	 System.out.println(videoTS);
               	 if(frame == null) {
                		 break;
               	  }else {
               		 IplImage grabbedImage = converterToIplImage.convert(frame);
-              		 //grabbedImage = choiceCam.undistort(grabbedImage);
               		 frame = converterToIplImage.convert(grabbedImage);
-              		 frame.timestamp = System.currentTimeMillis();
+              		 frame.timestamp = System.currentTimeMillis();              		
               		 traitement(frame);
               		 image = SwingFXUtils.toFXImage(converter.convert(frame), null);
               		 Platform.runLater(() -> {

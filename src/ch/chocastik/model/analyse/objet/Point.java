@@ -57,4 +57,18 @@ public class Point {
 	public double getDistance(Point point) {
 		return Math.sqrt(Math.pow((point.getX() - this.x.get()),2) + Math.pow((point.getY()-this.y.get()),2));
 	}
+	@Override
+	public boolean equals(Object other){
+	    if (other == null) 
+	    	return false;
+	    if (other == this) 
+	    	return true;
+	    if (!(other instanceof Point))
+	    	return false;
+	    Point point = (Point) other;
+	    if(this.getTimecode() == point.getTimecode())
+	    	return true;
+	    else
+	    	return false;
+	}
 }

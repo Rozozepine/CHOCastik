@@ -45,16 +45,23 @@ public class Trajectoire {
 		}
 	}
 	public void exportTrajectoire(Mesure mesure, ArrayList<Tracker> listTraker) {
-		for()
+		for(Tracker traker: listTraker) {
+			if(this != traker.getTrajectoire()) {
+				this.listOfPoint.retainAll(traker.getTrajectoire().getListOfPoint());
+			}
+		}
+		mesure.calculateNbPixel();
 		try {
 			PrintWriter writer = new PrintWriter("C:\\Users\\Rose\\Documents\\Projet\\Unige\\CHOCastik\\Resultat\\"+mobile.getName()+".txt");
+			writer.println("Mobile name: "+ mobile.getName());
+			writer.println("Nombre de pixels : "+mesure.getNbPixel() + " Coefficient : "+mesure.getCoef());
 			for(Point point: listOfPoint) {
-				//mesure.transformPointToRealPoint(point);
+				mesure.transformPointToRealPoint(point);
 				writer.println(point.getTimecode()+":"+point.getX()+":"+point.getY());
 			}
 			writer.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}

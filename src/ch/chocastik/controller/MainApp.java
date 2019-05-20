@@ -1,6 +1,8 @@
 package ch.chocastik.controller;
 
 import ch.chocastik.model.analyse.objet.*;
+import ch.chocastik.model.analyse.objet.Point;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,12 +24,11 @@ import org.opencv.core.*;
 
 import ch.chocastik.view.accueil.AccueilController;
 import ch.chocastik.view.analyse.AddGlisseurController;
-import ch.chocastik.view.analyse.AddMesureController;
 import ch.chocastik.view.analyse.AddReferentielleController;
 import ch.chocastik.view.analyse.AnalyseController;
 import ch.chocastik.view.analyse.EditGlisseurController;
 
-import ch.chocastik.view.calibration.CalibrationController;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -95,19 +96,6 @@ public class MainApp extends Application {
 			AnalyseController controller = loader.getController();
 			controller.setMainApp(this);
 			controller.dsetCameraChoice(cam);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	public void showCalibration(CameraDevice cam) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/calibration/CalibrationFX.fxml"));
-			AnchorPane calibration = (AnchorPane) loader.load();
-			rootLayout.setCenter(calibration);
-			CalibrationController controller = loader.getController();
-			controller.setCameraChoice(cam);
-			controller.setMainApp(this);
-			controller.initVariable();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -183,28 +171,8 @@ public class MainApp extends Application {
 			return false;
 		}
 	}
-	public boolean showAddMesure(Image frame) {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("/ch/chocastik/view/analyse/AddMesureFX.fxml"));
-			SplitPane page = (SplitPane) loader.load();
-			Stage dialogueStage = new Stage();
-			dialogueStage.setTitle("Add Mesure");
-			dialogueStage.initModality(Modality.WINDOW_MODAL);
-			dialogueStage.initOwner(primaryStage);
-	        Scene scene = new Scene(page);
-	        dialogueStage.setScene(scene);
-	        AddMesureController controleur = loader.getController();
-	        controleur.setDialogueStage(dialogueStage);
-	        controleur.setFrame(frame);
-	        controleur.setMesure(mesure);
-	        dialogueStage.showAndWait();
-	        return controleur.isOkClicked();
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+
+	
 	
 	// Get et Set 
 	public Mesure getMesure() {
@@ -255,8 +223,11 @@ public class MainApp extends Application {
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		 Loader.load(opencv_objdetect.class);
-		
+		Point point = new Point(1, 2, 10);
+		Point point2 = new Point(1, 3, 10);
+		System.out.print(point.equals(point2));
 		launch(args);
 	}
+
 
 }

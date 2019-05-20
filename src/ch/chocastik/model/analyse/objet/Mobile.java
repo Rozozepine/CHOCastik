@@ -40,10 +40,10 @@ public class Mobile {
 	private StringProperty nameExport;
     private CvScalar hsvMin;
     private CvScalar hsvMax;
-    private  int ErodeCount = 2;
-    private  int DilateCount = 2;
+    private  int ErodeCount = 3;
+    private  int DilateCount = 3;
     private  int maxRad = 20;
-    private  int minRad = 1;
+    private  int minRad = 12;
     private int tolHue = 10;
     private int nbMobile;
     
