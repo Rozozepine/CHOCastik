@@ -10,7 +10,6 @@ import java.util.ResourceBundle;
 import org.bytedeco.javacpp.videoInputLib.videoInput;
 import org.bytedeco.javacv.CameraDevice;
 import org.bytedeco.javacv.CameraSettings;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.VideoInputFrameGrabber;
 import org.bytedeco.javacv.ProjectiveDevice.Exception;
@@ -43,27 +42,23 @@ public class AccueilController {
 
 	
 	@FXML
-	public void OpenCalib(MouseEvent event) throws Exception, PropertyVetoException, org.bytedeco.javacv.FrameGrabber.Exception {
+	public void OpenCalib() throws Exception, PropertyVetoException {
 		CameraDevice.Settings[] cs= cameraSettings.toArray();
 		cs[this.choice].setDeviceNumber(this.choice);
 		System.out.print(cs[this.choice].getDeviceNumber());
    	 	cameraDevices = new CameraDevice(cs[this.choice]);    	
-   	 	
-		this.mainApp.showAnalyse(cameraDevices);
+		this.mainApp.showPreparation(cameraDevices);
 	}
 		
 	public void setMainApp(MainApp mainApp) {
-	   this.mainApp = mainApp;
-	   
+	   this.mainApp = mainApp;   
 	}
     @FXML
     private void initialize() throws PropertyVetoException, org.bytedeco.javacv.FrameGrabber.Exception{
     	int n = VideoInputFrameGrabber.getDeviceDescriptions().length;
-    	
     	cameraSettings.setQuantity(n);  
-    	SelectionCam.setText("Aucune caméras");
+    	SelectionCam.setText("Aucune camï¿½ras");
 		for (int i = 0; i < n; i++) {
-			
 			MenuItem menuItem = new MenuItem("Device "+i+" : " +VideoInputFrameGrabber.getDeviceDescriptions()[i]);
 			menuItem.setId(Integer.toString(i));
 			menuItem.setOnAction(createChoiceHandler(i));

@@ -26,8 +26,7 @@ import javafx.stage.Stage;
 import ch.chocastik.model.analyse.objet.*;
 
 public class AddGlisseurController {
-    @FXML
-    private AnchorPane conteneur;
+   
     @FXML
     private TextField nameMobile;
     @FXML
