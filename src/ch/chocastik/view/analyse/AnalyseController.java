@@ -158,10 +158,7 @@ public class AnalyseController {
     		}
     	}
     }
-	@FXML
-	public void handleReferentiel() {
-		mainApp.showAddReferentiel(image);
-	}
+
 
 	@FXML
 	public void handleExportAll() {

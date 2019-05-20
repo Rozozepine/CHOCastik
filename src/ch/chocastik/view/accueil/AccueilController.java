@@ -47,7 +47,7 @@ public class AccueilController {
 		cs[this.choice].setDeviceNumber(this.choice);
 		System.out.print(cs[this.choice].getDeviceNumber());
    	 	cameraDevices = new CameraDevice(cs[this.choice]);    	
-		this.mainApp.showAnalyse(cameraDevices);
+		this.mainApp.showPreparation(cameraDevices);
 	}
 		
 	public void setMainApp(MainApp mainApp) {

@@ -24,10 +24,9 @@ import org.opencv.core.*;
 
 import ch.chocastik.view.accueil.AccueilController;
 import ch.chocastik.view.analyse.AddGlisseurController;
-import ch.chocastik.view.analyse.AddReferentielleController;
+
 import ch.chocastik.view.analyse.AnalyseController;
-
-
+import ch.chocastik.view.reglage.PreparationController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -91,14 +90,15 @@ public class MainApp extends Application {
 		}
 	public void showPreparation(CameraDevice cam) {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/reglage/PreparationController.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/reglage/Preparation.fxml"));
 			AnchorPane analyse = (AnchorPane) loader.load();
 			Scene scene = new Scene(analyse);
             primaryStage.setScene(scene);
             primaryStage.show();
-			 controller = loader.getController();
+			PreparationController controller = loader.getController();
 			controller.setMainApp(this);
 			controller.dsetCameraChoice(cam);
+			controller.setReferentiel(referentiel);
 		}catch(Exception e) {
 			e.printStackTrace();
 		} 
@@ -131,32 +131,8 @@ public class MainApp extends Application {
 			return false;
 		}
 	}
-	/**
-	 * Fonction affichant la fenetre de modification et d'ajout d'un Referentiel
-	 * @return boolean
-	 */
-	public boolean showAddReferentiel(Image frame) {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("/ch/chocastik/view/analyse/AddReferentielleFX.fxml"));
-			AnchorPane page = (AnchorPane) loader.load();
-			Stage dialogueStage = new Stage();
-			dialogueStage.setTitle("Add Referentielle");
-			dialogueStage.initModality(Modality.WINDOW_MODAL);
-			dialogueStage.initOwner(primaryStage);
-	        Scene scene = new Scene(page);
-	        dialogueStage.setScene(scene);
-	        AddReferentielleController controleur = loader.getController();
-	        controleur.setDialogueStage(dialogueStage);
-	        controleur.setFrame(frame);
-	        controleur.setReferentiel(this.getReferentiel());
-	        dialogueStage.showAndWait();
-	        return controleur.isOkClicked();
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+
+	
 
 	
 	
