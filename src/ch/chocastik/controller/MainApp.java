@@ -18,9 +18,9 @@ import org.bytedeco.javacv.MarkedPlane;
 import org.bytedeco.javacv.Marker;
 import org.bytedeco.javacv.MarkerDetector;
 import org.bytedeco.javacv.ProjectorSettings;
+import org.bytedeco.javacv.VideoInputFrameGrabber;
 import org.opencv.core.*;
-
-
+import org.opencv.video.Video;
 
 import ch.chocastik.view.accueil.AccueilController;
 import ch.chocastik.view.analyse.AddGlisseurController;
@@ -74,7 +74,7 @@ public class MainApp extends Application {
 			e.printStackTrace();
 		}
 	}
-	public void showAnalyse(CameraDevice cam) {
+	public void showAnalyse(int cam) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/analyse/AnalyseFX.fxml"));
 			AnchorPane analyse = (AnchorPane) loader.load();
@@ -88,7 +88,7 @@ public class MainApp extends Application {
 			e.printStackTrace();
 		} 
 		}
-	public void showPreparation(CameraDevice cam) {
+	public void showPreparation(int cam) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ch/chocastik/view/reglage/Preparation.fxml"));
 			AnchorPane analyse = (AnchorPane) loader.load();

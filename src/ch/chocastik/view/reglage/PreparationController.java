@@ -1,10 +1,15 @@
 package ch.chocastik.view.reglage;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import org.bytedeco.javacpp.opencv_core.IplImage;
 import org.bytedeco.javacv.CameraDevice;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
+import org.bytedeco.javacv.VideoInputFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
 import ch.chocastik.controller.MainApp;
@@ -40,8 +45,7 @@ public class PreparationController {
     private TextField endY;
     @FXML
     private ImageView referentielFrame;
-    @FXML
-    private AnchorPane conteneur;
+
     @FXML
     private ColorPicker InitalColor;
 	@FXML
@@ -62,7 +66,8 @@ public class PreparationController {
 	private boolean flagColor = false;
 	private boolean okClicked;
 	private MainApp mainApp;
-	private CameraDevice choiceCam;
+	private int choiceCam;
+
 	final Java2DFrameConverter converter = new Java2DFrameConverter();
 	double ratioX;
 	double ratioY;
@@ -84,6 +89,7 @@ public class PreparationController {
     	referentiel.setMaxPixelX((int) Double.parseDouble(endX.getText()));
     	referentiel.setMaxPixelY((int) Double.parseDouble(endY.getText()));
     	referentiel.setFrameHeight((float) image.getHeight());
+
     	this.mainApp.showAnalyse(choiceCam);
     }
 	/**
@@ -107,6 +113,7 @@ public class PreparationController {
     	if(flageOrigine || flagEnd) {
     		flagEnd = false;
     		flageOrigine = false;
+    		flagColor = true;
     		
     	}else {
     		flagColor = true;
@@ -167,28 +174,34 @@ public class PreparationController {
         tableMobile.setItems(mainApp.getMobileData());
 	}
 	
-	public void dsetCameraChoice(CameraDevice cam) {
+	public void dsetCameraChoice(int cam) {
 		this.choiceCam = cam;
 	}
 	
     @FXML
     void captureFrame(ActionEvent event) throws Exception {
-		  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
-		  final FrameGrabber grabber =  FrameGrabber.createDefault(setting.getDeviceNumber()); // on cr�e le grabber 
-		  final int captureWidth = 1920;
-		  final int captureHeight = 1080;
-		  grabber.start();
-		  frame = grabber.grab();  
-		  if(!(frame == null)){
-       		 image = SwingFXUtils.toFXImage(converter.convert(frame), null);
-       		 Platform.runLater(() -> {
-       		    	 referentielFrame.setImage(image);
-       		 });	
-		  }
-    	  ratioX = image.getWidth()/640; 
-    	  ratioY = image.getHeight()/380;
-		  grabber.stop();
-		  grabber.release();
+    	  Thread threadCapture = new Thread(new Runnable() { public void run() {
+     		   try {
+     	  			FrameGrabber grabber = FrameGrabber.createDefault(choiceCam);
+     	  			  //grabber.setImageHeight(1920);
+     	  			  //grabber.setImageWidth(1080);
+     	  			  grabber.start(); // on le demarre      	          
+     	  			  frame = grabber.grab();  
+     	              image = SwingFXUtils.toFXImage(converter.convert(frame), null);
+     	              ratioX = image.getWidth()/640; 
+     	              ratioY = image.getHeight()/380;
+     	              Platform.runLater(() -> {
+     	              		    	 referentielFrame.setImage(image);
+     	              });
+     	                grabber.stop();
+     	                grabber.release();
+     	              		   
+     	  		   } catch (Exception e) {
+     	  			   e.printStackTrace();
+     	  		   }
+     		   
+    	  }});
+    	  threadCapture.start();
     }
 	public void setReferentiel(Referentiel ref) {	
 		this.referentiel = ref;

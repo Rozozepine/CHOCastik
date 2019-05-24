@@ -42,12 +42,8 @@ public class AccueilController {
 
 	
 	@FXML
-	public void OpenCalib() throws Exception, PropertyVetoException {
-		CameraDevice.Settings[] cs= cameraSettings.toArray();
-		cs[this.choice].setDeviceNumber(this.choice);
-		System.out.print(cs[this.choice].getDeviceNumber());
-   	 	cameraDevices = new CameraDevice(cs[this.choice]);    	
-		this.mainApp.showPreparation(cameraDevices);
+	public void OpenCalib() throws Exception, PropertyVetoException, org.bytedeco.javacv.FrameGrabber.Exception {
+		this.mainApp.showPreparation(choice);
 	}
 		
 	public void setMainApp(MainApp mainApp) {

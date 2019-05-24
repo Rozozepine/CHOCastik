@@ -140,11 +140,7 @@
             <Font name="Arial Black" size="15.0" />
          </font>
       </Label>
-      <AnchorPane fx:id="conteneur" layoutX="477.0" layoutY="255.0">
-         <children>
-            <ImageView fx:id="referentielFrame" fitHeight="380.0" fitWidth="640.0" onMouseClicked="#handleMouseClicked" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" pickOnBounds="true" preserveRatio="true" />
-         </children>
-      </AnchorPane>
+      <ImageView fx:id="referentielFrame" fitHeight="380.0" fitWidth="640.0" layoutX="464.0" layoutY="255.0" onMouseClicked="#handleMouseClicked" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" pickOnBounds="true" preserveRatio="true" />
       <Group layoutX="1252.0" layoutY="124.0">
          <children>
             <ImageView fitHeight="84.0" fitWidth="112.0" pickOnBounds="true" preserveRatio="true">

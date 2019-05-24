@@ -97,7 +97,7 @@ public class AnalyseController {
 	@FXML
 	private  TableColumn<Mobile, String> colCouleur;
 
-    
+
     // Attribut de l'Objet
     private static volatile Thread playThread;
     private static volatile Thread analyseThread;
@@ -108,9 +108,10 @@ public class AnalyseController {
 	private Timer timer;
 	private  Iterator it;
 	private ConcurrentLinkedQueue<Frame> pileFrame;
-	private CameraDevice choiceCam;
+	private int choiceCam;
 	final Java2DFrameConverter converter = new Java2DFrameConverter();
 	final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
+
    // Methode JavaFX
     @FXML
     private void initialize() {
@@ -136,7 +137,6 @@ public class AnalyseController {
     void startAnalyse() {
     	if(mainApp.getThreadAnalyseFlag()) {
     		mainApp.setThreadAnalyseFlag(false);
-    		this.setMenuDisable(false);
     		this.StartAnalyse.setText("Start Analyse");
     		
     	}else {
@@ -144,9 +144,8 @@ public class AnalyseController {
     			deleteAllDataGraph();
     			creatDataGraph();
     			analyseThread = new Thread(new Analyse(mainApp));
-    			analyseThread.start();
-    			this.setMenuDisable(true);
     			mainApp.setThreadAnalyseFlag(true);
+    			analyseThread.start();
     			this.StartAnalyse.setText("Stop Analyse");
     		}else {
     			Alert alert = new Alert(AlertType.WARNING);
@@ -275,16 +274,13 @@ public class AnalyseController {
 	        tableMobile.setItems(mainApp.getMobileData());
 	        this.pileFrame = mainApp.getPileImage();
 	}
-	public void dsetCameraChoice(CameraDevice cam) {
+	public void dsetCameraChoice(int cam) {
 		this.choiceCam = cam;
 	}
 	/**
 	 * bloque ou debloque tout les menu
 	 */
-	private void setMenuDisable(boolean value) {
-		this.itemReferentiel.setDisable(value);
-		this.itemGlisseur.setDisable(value);
-	}
+
 	// Methode de l'objet
 	/**
 	 * Transmet � thread s'occupant des calculs les frame
@@ -292,7 +288,7 @@ public class AnalyseController {
 	 */
 	public void traitement(Frame frame) {
 		if(mainApp.getThreadAnalyseFlag()) {
-			pileFrame.add(frame.clone());		
+			pileFrame.add(frame);		
 		}	
 	}
 	/**
@@ -301,9 +297,8 @@ public class AnalyseController {
 	public void threadCam() {
   	   playThread = new Thread(new Runnable() { public void run() {
   		   try {
-  			  CameraDevice.Settings setting = (CameraDevice.Settings) choiceCam.getSettings();
-  			
-  			  final  VideoInputFrameGrabber grabber = VideoInputFrameGrabber.createDefault(setting.getDeviceNumber()); // on cr�e le grabber 
+  			VideoInputFrameGrabber grabber = new VideoInputFrameGrabber(choiceCam);
+
   			  grabber.setFrameRate(60);
   			  grabber.setImageHeight(1920);
   			  grabber.setImageWidth(1080);
@@ -329,16 +324,16 @@ public class AnalyseController {
               	   }
               	 Thread.sleep(15);	   
                }
-               
+              grabber.stop();
+
                executor.shutdownNow();
                executor.awaitTermination(10, TimeUnit.SECONDS);
-               grabber.stop();
-               grabber.release();				
   		   } catch (Exception e) {
   			   e.printStackTrace();
   		   } catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+  		   
   	   }});
 
   }
