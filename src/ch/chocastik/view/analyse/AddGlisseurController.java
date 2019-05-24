@@ -49,6 +49,8 @@ public class AddGlisseurController {
 	private Mobile mobile;
 	private Color color = new Color(0,0,0.4, 1.0);
 	private Image frame;
+	double ratioX = 1920/640; 
+    double ratioY = 1080/360;
 
     public AddGlisseurController() {
     }
@@ -87,7 +89,9 @@ public class AddGlisseurController {
 	}
     @FXML
     void choiceColor(MouseEvent event) {
+    	double x = event.getX()*ratioX;
+    	double y = (360-event.getY())*ratioY;
     	PixelReader pixelReader = frame.getPixelReader(); 
-    	this.InitalColor.setValue(pixelReader.getColor((int)event.getX(), (int) event.getY())); 
+    	this.InitalColor.setValue(pixelReader.getColor((int) x, (int) y)); 
     }
 }

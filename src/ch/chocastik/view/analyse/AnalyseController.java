@@ -292,7 +292,7 @@ public class AnalyseController {
 		}	
 	}
 	/**
-	 * Crï¿½e le Thread s'occupant de la camera 
+	 * Créee le Thread s'occupant de la camera 
 	 */
 	public void threadCam() {
   	   playThread = new Thread(new Runnable() { public void run() {
@@ -300,8 +300,8 @@ public class AnalyseController {
   			VideoInputFrameGrabber grabber = new VideoInputFrameGrabber(choiceCam);
 
   			  grabber.setFrameRate(60);
-  			  grabber.setImageHeight(1920);
-  			  grabber.setImageWidth(1080);
+  			  grabber.setImageHeight(1080);
+  			  grabber.setImageWidth(1920);
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
   			  grabber.start(); // on le demarre 
 
