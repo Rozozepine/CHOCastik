@@ -22,7 +22,7 @@
                   <Image url="@../Images/ChocastikLOGO.png" />
                </image>
             </ImageView>
-            <SplitMenuButton fx:id="SelectionCam" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" layoutX="219.0" layoutY="353.0" mnemonicParsing="false" text="Séléctionner une caméra" AnchorPane.leftAnchor="219.0" AnchorPane.rightAnchor="255.0">
+            <SplitMenuButton fx:id="SelectionCam" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" layoutX="219.0" layoutY="353.0" mnemonicParsing="false" text="Sélectionner une caméra" AnchorPane.leftAnchor="219.0" AnchorPane.rightAnchor="255.0">
                <font>
                   <Font name="Arial Black" size="19.0" />
                </font>
