@@ -81,7 +81,7 @@ public class PreparationController {
     	referentiel.setPixelYOrigine((int) Double.parseDouble(origineY.getText()));
     	referentiel.setMaxPixelX((int) Double.parseDouble(endX.getText()));
     	referentiel.setMaxPixelY((int) Double.parseDouble(endY.getText()));
-    	referentiel.setFrameHeight((float) image.getHeight());
+
     	// on affiche la suite
     	this.mainApp.showAnalyse(choiceCam);
     }
@@ -198,6 +198,13 @@ public class PreparationController {
 	@FXML
 	private void handleNewMobile() {
 		Mobile mobile = new Mobile(InitalColor.getValue(), nameMobile.getText()); // mobile prédifinit 
+    	mobile.setColor(this.InitalColor.getValue(), 10);
+    	mobile.setDilateCount(3);
+    	mobile.setErodeCount(3);
+    	mobile.setMaxRad(18);
+    	mobile.setMinRad(12);
+    	mobile.setName(nameMobile.getText());
+    	
 		this.mainApp.getMobileData().add(mobile);
 		InitalColor.setValue(Color.WHITE);
 		nameMobile.setText("");

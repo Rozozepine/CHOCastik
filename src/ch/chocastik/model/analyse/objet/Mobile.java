@@ -45,12 +45,21 @@ public class Mobile {
     private  int maxRad = 20;
     private  int minRad = 12;
     private int tolHue = 10;
-    private int nbMobile;
+
     
 	public Mobile(Color color2, String name) {
 		this.nameExport = new SimpleStringProperty(name);
 		this.setColor(new SimpleObjectProperty<Color>(color2));
-	}	
+	}
+	public Mobile(Color color2, String name, int dilate, int erode, int max, int min, int tol) {
+		this.nameExport = new SimpleStringProperty(name);
+		this.setColor(new SimpleObjectProperty<Color>(color2));
+		this.DilateCount = dilate;
+		this.ErodeCount = erode;
+		this.maxRad = max;
+		this.minRad = min;
+		this.tolHue = tol;
+	}
 	public ObjectProperty<Color> colorProperty() {
 		return color;
 	}
@@ -115,12 +124,6 @@ public class Mobile {
 	}
 	public void setHsvMin(CvScalar hsvMin) {
 		this.hsvMin = hsvMin;
-	}
-	public int getNbMobile() {
-		return nbMobile;
-	}
-	public void setNbMobile(int nbMobile) {
-		this.nbMobile = nbMobile;
 	}
 
 }

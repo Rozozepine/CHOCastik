@@ -39,20 +39,32 @@ public class Analyse implements Runnable {
 		this.mesure = mainApp.getMesure();
 		this.pileFrame = mainApp.getPileImage();
 		this.mainApp = mainApp;
-		this.startTime = System.currentTimeMillis();
 	}
 
-	@Override
-	public void run() {
-		//tant que le Thread n'est pas stoppée on repete l'action
-		while(mainApp.getThreadAnalyseFlag() || !pileFrame.isEmpty()) {
+	public void analyseFrame() {
 			Frame frame = pileFrame.poll(); 
 			if(frame != null) {
 				for(Tracker trac: listTraker) 
-					trac.detectCircle(converterToIplImage.convert(frame),frame.timestamp-startTime);
+					trac.detectCircle(converterToIplImage.convert(frame),frame.timestamp);
 			}
-		}	
+		
 	}
+	@Override
+	public void run() {
+		mainApp.setAnalyseEndFlag(false);
+		//tant que le Thread n'est pas stoppée on repete l'action
+		while(mainApp.getThreadAnalyseFlag()) {
+			if(!pileFrame.isEmpty()) 
+				analyseFrame();
+		}
+		if(!mainApp.getThreadAnalyseFlag() && !pileFrame.isEmpty()) {
+			while(!pileFrame.isEmpty()) {
+				analyseFrame();
+			}
+		}
+		mainApp.setAnalyseEndFlag(true);
+	}
+	
 		
 	//Get et Set
 }

@@ -54,6 +54,7 @@ public class MainApp extends Application {
 	private ConcurrentLinkedQueue<Frame> pileImage = new ConcurrentLinkedQueue<Frame>();
 	private volatile boolean threadAnalyseFlag = false;
 	private volatile boolean threadCaptureFlag = false; 
+	private volatile boolean analyseEndFlag = true;
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -189,6 +190,12 @@ public class MainApp extends Application {
 		Point point2 = new Point(1, 3, 10);
 		System.out.print(point.equals(point2));
 		launch(args);
+	}
+	public boolean getAnalyseEndFlag() {
+		return analyseEndFlag;
+	}
+	public void setAnalyseEndFlag(boolean analyseEndFlag) {
+		this.analyseEndFlag = analyseEndFlag;
 	}
 
 

@@ -111,8 +111,19 @@ public class AnalyseController {
 	private int choiceCam;
 	final Java2DFrameConverter converter = new Java2DFrameConverter();
 	final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
-
-   // Methode JavaFX
+	private VideoInputFrameGrabber grabber;
+	private long startTime;
+	
+	
+	public void messageErreur(String titre, String header, String contenu) {
+		Alert alert = new Alert(AlertType.WARNING);
+	    alert.initOwner(mainApp.getPrimaryStage());
+	    alert.setTitle(titre);
+        alert.setHeaderText(header);
+        alert.setContentText(contenu);
+        alert.showAndWait();
+	}
+	// Methode JavaFX
     @FXML
     private void initialize() {
     	this.AxeX.setLabel("Axe X");
@@ -124,37 +135,37 @@ public class AnalyseController {
     public void startCamera() {
        if(mainApp.getThreadCaptureFlag()) {
     	   mainApp.setThreadCaptureFlag(false);
-    	   this.Startvideo.setText("Start");
+    	   this.Startvideo.setText("Start Capture");
        }else {
     	   this.threadCam();
     	   mainApp.setThreadCaptureFlag(true);
     	   playThread.start();
-    	   this.Startvideo.setText("Stop");
- 
+    	   this.Startvideo.setText("Stop Capture");
        }
     }
     @FXML 
     void startAnalyse() {
     	if(mainApp.getThreadAnalyseFlag()) {
     		mainApp.setThreadAnalyseFlag(false);
-    		this.StartAnalyse.setText("Start Analyse");
-    		
+    		this.StartAnalyse.setText("Start Analyse");	
     	}else {
-    		if(!mainApp.getMobileData().isEmpty() &&  mainApp.getReferentiel() != null &&  mainApp.getMesure() != null) {
-    			deleteAllDataGraph();
-    			creatDataGraph();
-    			analyseThread = new Thread(new Analyse(mainApp));
-    			mainApp.setThreadAnalyseFlag(true);
-    			analyseThread.start();
-    			this.StartAnalyse.setText("Stop Analyse");
+    		
+    		if(mainApp.getAnalyseEndFlag()) {
+    			if(!mainApp.getMobileData().isEmpty()) {
+        			deleteAllDataGraph();
+        			creatDataGraph();
+        			this.startTime = System.currentTimeMillis();
+        			analyseThread = new Thread(new Analyse(mainApp));
+        			mainApp.setThreadAnalyseFlag(true);
+        			analyseThread.start();
+        			this.StartAnalyse.setText("Stop Analyse");
+        		}else {
+        			messageErreur("No Selection", "No Mobile Selected", "Please select a Mobile in the table.");
+        		}
     		}else {
-    			Alert alert = new Alert(AlertType.WARNING);
-    		    alert.initOwner(mainApp.getPrimaryStage());
-    		    alert.setTitle("No Selection");
-    	        alert.setHeaderText("Need all of Data");
-    	        alert.setContentText("Please add Date in the table.");
-    	        alert.showAndWait();
+    			messageErreur("Analyse en cour", "Analyse en cour", "Une analyse est deja en cour");
     		}
+    		
     	}
     }
 
@@ -193,44 +204,12 @@ public class AnalyseController {
 	@FXML
 	private void handleEditMobile() {
 		Mobile selectMobile = tableMobile.getSelectionModel().getSelectedItem();
-		// si le mobile selctionnï¿½e existe on affiche la fenetre d'ajout avec les parametetre du mobile sinon
-		// on affiche un message d'erreur
-		if(selectMobile != null) {
-			boolean isOk = mainApp.showAddGlisseur(selectMobile, image); // si il n'y pas d'erreur on l'ajoute
-		}else {
-			//rien n'a ï¿½tï¿½ selectionnï¿½e
-			Alert alert = new Alert(AlertType.WARNING);
-		    alert.initOwner(mainApp.getPrimaryStage());
-		    alert.setTitle("No Selection");
-	        alert.setHeaderText("No Mobile Selected"); 
-	        alert.setContentText("Please select a Mobile in the table.");
-	        alert.showAndWait();
-		}
-		
+		if(selectMobile != null)
+			mainApp.showAddGlisseur(selectMobile, image);
+		else
+			messageErreur("No Selection", "No Mobile Selected", "Please select a Mobile in the table.");	
 	}
 	
-	
-	public void showFrame(Point point) {
-		if(!analyseIsActive) {
-			final CvFont font = new CvFont(); 
-		    if(mainApp.getThreadCaptureFlag()) {
-		    	   mainApp.setThreadCaptureFlag(false);
-		    	   this.videoIsActive= false;
-		    	   this.Startvideo.setText("Start");
-		    }
-        	IplImage dessin = cvCloneImage(converterToIplImage.convert(frame));
-        	cvInitFont(font, CV_FONT_HERSHEY_PLAIN,0.5, 0.5);
-        	mainApp.getReferentiel().transformToNoneRelatif(point);
-        	mainApp.getReferentiel().transformToNoneNaturalReferentiel(point);
-        	cvPutText(dessin, "Mobile", cvPoint((int) point.getX(),(int) point.getY()), font, CvScalar.GREEN); 
-        	mainApp.getReferentiel().transformToNaturalReferentiel(point);
-        	mainApp.getReferentiel().transformToRelatif(point);
-        	Frame frame = converterToIplImage.convert(dessin);
-    		Image image = SwingFXUtils.toFXImage(converter.convert(frame), null);
-        	RetourCam.setImage(image);
-     		
-		}
-	}
 	private void deleteAllDataGraph() {
 
 		tabPane.getTabs().removeAll(tabPane.getTabs());
@@ -254,10 +233,7 @@ public class AnalyseController {
 			xCol.setCellValueFactory(cellData -> cellData.getValue().xProperty().asObject());
 			yCol.setCellValueFactory(cellData -> cellData.getValue().yProperty().asObject());
 			timeCol.setCellValueFactory(cellData -> cellData.getValue().timeProperty().asObject());
-			table.getColumns().addAll(timeCol, xCol, yCol);
-			table.getSelectionModel().selectedItemProperty().addListener(
-		            (observable, oldValue, newValue) -> showFrame(newValue));
-			
+			table.getColumns().addAll(timeCol, xCol, yCol);	
 			tab.setContent(table);
 			tabPane.getTabs().add(tab);	
 			mainApp.getListTraker().add(tracker);
@@ -276,64 +252,46 @@ public class AnalyseController {
 	}
 	public void dsetCameraChoice(int cam) {
 		this.choiceCam = cam;
+		grabber = new VideoInputFrameGrabber(choiceCam);
+		grabber.setFrameRate(60);
+		grabber.setImageHeight(1080);
+		grabber.setImageWidth(1920);
 	}
-	/**
-	 * bloque ou debloque tout les menu
-	 */
 
-	// Methode de l'objet
-	/**
-	 * Transmet ï¿½ thread s'occupant des calculs les frame
-	 * @param frame
-	 */
+	
 	public void traitement(Frame frame) {
 		if(mainApp.getThreadAnalyseFlag()) {
 			pileFrame.add(frame);		
 		}	
 	}
-	/**
-	 * Créee le Thread s'occupant de la camera 
-	 */
 	public void threadCam() {
   	   playThread = new Thread(new Runnable() { public void run() {
   		   try {
-  			VideoInputFrameGrabber grabber = new VideoInputFrameGrabber(choiceCam);
-
-  			  grabber.setFrameRate(60);
-  			  grabber.setImageHeight(1080);
-  			  grabber.setImageWidth(1920);
   			  ExecutorService executor = Executors.newSingleThreadExecutor();
   			  grabber.start(); // on le demarre 
-
-  			  long startTime = System.currentTimeMillis();
-  			  long videoTS;
               while(mainApp.getThreadCaptureFlag()) {
             	 frame = grabber.grab();  
-            	 videoTS = System.currentTimeMillis() - startTime;
+            	 
               	 if(frame == null) {
                		 break;
               	  }else {
-              		 IplImage grabbedImage = converterToIplImage.convert(frame);
-              		 frame = converterToIplImage.convert(grabbedImage);
-              		 frame.timestamp = System.currentTimeMillis();              		
+              		 frame.timestamp = System.currentTimeMillis()-startTime;         		
               		 traitement(frame);
               		 image = SwingFXUtils.toFXImage(converter.convert(frame), null);
-              		 Platform.runLater(() -> {
-              		    	 RetourCam.setImage(image);
-              		 });
+              		 Platform.runLater(() -> RetourCam.setImage(image));
               	   }
               	 Thread.sleep(15);	   
                }
               grabber.stop();
-
-               executor.shutdownNow();
-               executor.awaitTermination(10, TimeUnit.SECONDS);
+              grabber.release();
+              executor.shutdownNow();
+              executor.awaitTermination(10, TimeUnit.SECONDS);
   		   } catch (Exception e) {
   			   e.printStackTrace();
   		   } catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-  		   
+  		 
   	   }});
 
   }
