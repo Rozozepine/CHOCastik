@@ -5,7 +5,7 @@ import static org.bytedeco.javacpp.opencv_core.cvCreateImage;
 import static org.bytedeco.javacpp.opencv_core.*;
 import org.bytedeco.javacpp.*;
 
-
+import java.io.File;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.ResourceBundle;
@@ -55,6 +55,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.stage.DirectoryChooser;
 import ch.chocastik.model.analyse.Analyse;
 import ch.chocastik.model.analyse.objet.*;
 
@@ -172,9 +173,15 @@ public class AnalyseController {
 
 	@FXML
 	public void handleExportAll() {
-		if(mainApp.getPileImage().isEmpty()) {
-			for(Tracker tracker: mainApp.getListTraker()) 
-				tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure(), mainApp.getListTraker());
+		if(mainApp.getAnalyseEndFlag()) {
+	        DirectoryChooser directoryChooser = new DirectoryChooser();
+	        directoryChooser.setInitialDirectory(new File("C:\\Users\\"));
+	        File selectedDirectory = directoryChooser.showDialog(mainApp.getPrimaryStage());
+	        System.out.println(selectedDirectory.getAbsolutePath());
+			for(Tracker tracker: mainApp.getListTraker())
+				tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure(), mainApp.getListTraker(), selectedDirectory);
+		}else {
+			messageErreur("Analyse en cour", "Analyse en cour", "Une analyse est deja en cour");
 		}
 		
 	}
@@ -183,19 +190,25 @@ public class AnalyseController {
 	 */
 	@FXML
 	private void handleDeleteMobile() {
-		int selectIndex = tableMobile.getSelectionModel().getSelectedIndex();
-		tableMobile.getItems().remove(selectIndex);
+		Mobile selectMobile = tableMobile.getSelectionModel().getSelectedItem();
+		if(selectMobile != null)
+			tableMobile.getItems().remove(selectMobile);
+		else
+			messageErreur("No Selection", "No Mobile Selected", "Please select a Mobile in the table.");
 	}
 	/**
 	 * Action lanc�e lorsque l'utilisateur clique sur le bouton Add
 	 */
 	@FXML
 	private void handleNewMobile() {
-		Mobile mobile = new Mobile(Color.BLUE, "Tpn"); // mobile pr�difinit 
-		boolean isOk = mainApp.showAddGlisseur(mobile, image); // si il n'y pas d'erreur on l'ajoute
-		if(isOk) {
+		Mobile mobile = new Mobile(Color.BLUE, "Tpn");
+		if(image != null) {
+			mainApp.showAddGlisseur(mobile, image); // si il n'y pas d'erreur on l'ajoute
 			this.mainApp.getMobileData().add(mobile);
+		}else {
+			messageErreur("Aucune image disponible", "Aucune image disponssible", "Aucune image disponible veuillez demarer la capture");
 		}
+		
 	}
 
 	/**
@@ -204,9 +217,12 @@ public class AnalyseController {
 	@FXML
 	private void handleEditMobile() {
 		Mobile selectMobile = tableMobile.getSelectionModel().getSelectedItem();
-		if(selectMobile != null)
+		
+		if(selectMobile != null && image != null)
 			mainApp.showAddGlisseur(selectMobile, image);
-		else
+		else if(image == null) 
+			messageErreur("Aucune image disponible", "Aucune image disponssible", "Aucune image disponible veuillez demarer la capture");
+		else if(selectMobile != null)
 			messageErreur("No Selection", "No Mobile Selected", "Please select a Mobile in the table.");	
 	}
 	
@@ -249,6 +265,11 @@ public class AnalyseController {
 	        this.mainApp = mainApp;
 	        tableMobile.setItems(mainApp.getMobileData());
 	        this.pileFrame = mainApp.getPileImage();
+	        this.mainApp.getPrimaryStage().setOnCloseRequest((event)->{
+	        	if(mainApp.getThreadCaptureFlag())
+	         	   mainApp.setThreadCaptureFlag(false);
+	        	
+	        });
 	}
 	public void dsetCameraChoice(int cam) {
 		this.choiceCam = cam;

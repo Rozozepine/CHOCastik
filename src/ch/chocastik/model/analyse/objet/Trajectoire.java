@@ -3,6 +3,7 @@ package ch.chocastik.model.analyse.objet;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.io.File;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -44,7 +45,7 @@ public class Trajectoire {
 			return true;
 		}
 	}
-	public void exportTrajectoire(Mesure mesure, ArrayList<Tracker> listTraker) {
+	public void exportTrajectoire(Mesure mesure, ArrayList<Tracker> listTraker, File file) {
 		for(Tracker traker: listTraker) {
 			if(this != traker.getTrajectoire()) {
 				this.listOfPoint.retainAll(traker.getTrajectoire().getListOfPoint());
