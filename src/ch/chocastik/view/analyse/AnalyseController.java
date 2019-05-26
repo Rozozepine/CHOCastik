@@ -205,11 +205,7 @@ public class AnalyseController {
     	   this.Startvideo.setText("Stop Capture");
        }
     }
-    public Frame flip(Frame frame) {
-    	this.iplImage = converterToIplImage.convert(frame);
-    	cvFlip(this.iplImage, this.iplImage, 1);
-    	return converterToIplImage.convert(this.iplImage);
-    }
+
     
 	public void threadCam() {
 	  	   playThread = new Thread(new Runnable() { public void run() {
@@ -222,9 +218,11 @@ public class AnalyseController {
 	              	 if(frame == null) {
 	               		 break;
 	              	  }else {
-	              		 frame = flip(frame);
+	             
+	              		  
 	              		 frame.timestamp = System.currentTimeMillis()-startTime;         		
 	              		 traitement(frame);
+	              		 
 	              		 image = SwingFXUtils.toFXImage(converter.convert(frame), null);
 	              		 Platform.runLater(() -> RetourCam.setImage(image));
 	              	   }
@@ -346,6 +344,7 @@ public class AnalyseController {
 		grabber.setFrameRate(60); // Frame Rate
 		grabber.setImageHeight(1080); // Largeur
 		grabber.setImageWidth(1920); // Hauteur
+		//grabber.setOption("transpose","cclock_flip");
 	}	
 }
 
