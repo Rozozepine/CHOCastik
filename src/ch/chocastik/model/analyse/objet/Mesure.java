@@ -3,8 +3,8 @@ package ch.chocastik.model.analyse.objet;
 import java.util.ArrayList;
 
 public class Mesure {
-		private int nbPixel = 0;
-		private float distanceRelle = 400;
+		private int nbPixel = 16;
+		private float distanceRelle = 2;
 		private float coef;
 		private ArrayList<Float> listRad = new ArrayList<Float>();
 		
@@ -13,8 +13,7 @@ public class Mesure {
 			point.setX(point.getX()*getCoef());
 			point.setY(point.getY()*getCoef());
 			
-		}
-		
+		}	
 		public void addRadius(float rad) {
 			listRad.add(rad);
 		}

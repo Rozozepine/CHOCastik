@@ -92,6 +92,6 @@ public class AddGlisseurController {
     	double x = event.getX()*ratioX;
     	double y = (360-event.getY())*ratioY;
     	PixelReader pixelReader = frame.getPixelReader(); 
-    	this.InitalColor.setValue(pixelReader.getColor((int) x, (int) y)); 
+    	this.InitalColor.setValue(pixelReader.getColor((int) x, 1080 - (int) y)); 
     }
 }

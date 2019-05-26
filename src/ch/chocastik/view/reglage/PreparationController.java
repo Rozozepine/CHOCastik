@@ -1,9 +1,13 @@
 package ch.chocastik.view.reglage;
 
 
+
+import static org.bytedeco.javacpp.opencv_core.*;
+
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
+import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 
 import ch.chocastik.controller.MainApp;
@@ -25,6 +29,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+
 
 public class PreparationController {
     @FXML
@@ -59,9 +64,11 @@ public class PreparationController {
 	private int choiceCam;
 	
 	private Referentiel referentiel;
+	final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
 	final Java2DFrameConverter converter = new Java2DFrameConverter();
 	double ratioX = 1920/640; 
     double ratioY = 1080/360;
+	private IplImage iplImage;
 	
     @FXML
     private void initialize() {
@@ -103,7 +110,11 @@ public class PreparationController {
     }
 	
     // ============ Methode pour l'affichage de l'image ================ //
-    
+    public Frame flip(Frame frame) {
+    	this.iplImage = converterToIplImage.convert(frame);
+    	cvFlip(this.iplImage, this.iplImage, 1);
+    	return converterToIplImage.convert(this.iplImage);
+    }
     @FXML
     void captureFrame(ActionEvent event) throws Exception {
     	  Thread threadCapture = new Thread(new Runnable() { public void run() {
@@ -112,7 +123,8 @@ public class PreparationController {
      	  			  grabber.setImageHeight(1080);
      	  			  grabber.setImageWidth(1920);
      	  			  grabber.start(); // on le demarre      	          
-     	  			  frame = grabber.grab();  
+     	  			  frame = flip(grabber.grab());  
+     	  			
      	              image = SwingFXUtils.toFXImage(converter.convert(frame), null);      
      	              Platform.runLater(() -> {
      	              		    	 referentielFrame.setImage(image);
@@ -136,7 +148,7 @@ public class PreparationController {
     void handleMouseClicked(MouseEvent event) {
     	double x = event.getX()*ratioX;
     	double y = (360-event.getY())*ratioY;
-
+    	
     	if(flagEnd) {
     		endX.setText(Double.toString((int) x));
     		endY.setText(Double.toString((int) y));
@@ -144,9 +156,9 @@ public class PreparationController {
     		origineX.setText(Double.toString((int) x));
     		origineY.setText(Double.toString((int) y));
     	}else if(flagColor) {
-    		System.out.print(image.getHeight());
+ 
     		PixelReader pixelReader = image.getPixelReader(); 
-        	this.InitalColor.setValue(pixelReader.getColor((int) x, (int) y)); 
+        	this.InitalColor.setValue(pixelReader.getColor((int) x, 1080 - (int) y)); 
         
     	}
     }

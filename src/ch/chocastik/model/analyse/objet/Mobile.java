@@ -51,15 +51,7 @@ public class Mobile {
 		this.nameExport = new SimpleStringProperty(name);
 		this.setColor(new SimpleObjectProperty<Color>(color2));
 	}
-	public Mobile(Color color2, String name, int dilate, int erode, int max, int min, int tol) {
-		this.nameExport = new SimpleStringProperty(name);
-		this.setColor(new SimpleObjectProperty<Color>(color2));
-		this.DilateCount = dilate;
-		this.ErodeCount = erode;
-		this.maxRad = max;
-		this.minRad = min;
-		this.tolHue = tol;
-	}
+
 	public ObjectProperty<Color> colorProperty() {
 		return color;
 	}

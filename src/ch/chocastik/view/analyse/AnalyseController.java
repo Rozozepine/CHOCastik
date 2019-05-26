@@ -65,8 +65,6 @@ import static org.bytedeco.javacpp.opencv_imgproc.CV_FONT_HERSHEY_PLAIN;
 
 public class AnalyseController {
 	// attribut FXML
- /*   @FXML
-    private AnchorPane conteneur; */
     @FXML
     private ImageView RetourCam;
     @FXML
@@ -114,8 +112,15 @@ public class AnalyseController {
 	final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
 	private VideoInputFrameGrabber grabber;
 	private long startTime;
+	IplImage iplImage;
 	
-	
+	 // ============ Methode Utilitaire ================ //
+	/**
+	 * Affiche un fenetre d'alerte
+	 * @param titre titre du message
+	 * @param header header du message
+	 * @param contenu contenu du message
+	 */
 	public void messageErreur(String titre, String header, String contenu) {
 		Alert alert = new Alert(AlertType.WARNING);
 	    alert.initOwner(mainApp.getPrimaryStage());
@@ -124,7 +129,43 @@ public class AnalyseController {
         alert.setContentText(contenu);
         alert.showAndWait();
 	}
-	// Methode JavaFX
+	/***
+	 * Met en place les different graphe nécessaire 
+	 */
+	private void creatDataGraph() {
+		for(Mobile mob: mainApp.getMobileData()) {	
+			// pour chaque mobile
+			XYChart.Series<Number, Number> series = new XYChart.Series<>(); //on commence par crée un nouveau graphe
+			series.setName(mob.getName()); //on lui donne le nom du mobile
+			graphiquePoint.getData().add(series); // on l'ajoute au graphe deja préesent
+			 // on crée un nouveau traker et onl'ajoute a la liste des tracker
+			Tracker tracker = new Tracker(mob, mainApp.getReferentiel(), series, mainApp.getMesure());
+			mainApp.getListTraker().add(tracker);
+			Tab tab = new Tab(); // on crée un nouvelle onglet
+			tab.setText(mob.getName()); // on lui donne le nom du mobile en cour
+			// on ajoute un tableau suivant l'ajout des point concerenant le mobile en cour
+			TableView<Point> table = new TableView<Point>();
+			TableColumn<Point,Float> xCol = new TableColumn<Point, Float>("X");
+			TableColumn<Point,Float> yCol = new TableColumn<Point,Float>("Y");
+			TableColumn<Point,Long> timeCol = new TableColumn<Point,Long>("timestamp");
+			table.setItems(tracker.getTrajectoire().getListOfPoint());
+			xCol.setCellValueFactory(cellData -> cellData.getValue().xProperty().asObject());
+			yCol.setCellValueFactory(cellData -> cellData.getValue().yProperty().asObject());
+			timeCol.setCellValueFactory(cellData -> cellData.getValue().timeProperty().asObject());
+			table.getColumns().addAll(timeCol, xCol, yCol);	
+			//on ajout le nouvelle onglet a la table des onglets
+			tab.setContent(table);
+			tabPane.getTabs().add(tab);				
+		}
+	}
+	/**
+	 * permet de reset tout les donnée contenu dans les graphe
+	 */
+	private void deleteAllDataGraph() {
+		tabPane.getTabs().removeAll(tabPane.getTabs());
+		graphiquePoint.getData().removeAll(graphiquePoint.getData());			
+	}
+	
     @FXML
     private void initialize() {
     	this.AxeX.setLabel("Axe X");
@@ -132,6 +173,26 @@ public class AnalyseController {
 		colName.setCellValueFactory(cellData -> cellData.getValue().nameExportProperty());
 		colCouleur.setCellValueFactory(cellData -> cellData.getValue().nameExportProperty());
     }
+    
+	@FXML
+	public void handleExportAll() {
+		if(mainApp.getAnalyseEndFlag()) {
+			// si l'analyse est fini on authorise l'export
+			// on crée un nouvelle fenetre de selection de dossier d'exports
+	        DirectoryChooser directoryChooser = new DirectoryChooser();
+	        directoryChooser.setInitialDirectory(new File("C:\\Users\\"));
+	        File selectedDirectory = directoryChooser.showDialog(mainApp.getPrimaryStage());
+	        System.out.println(selectedDirectory.getAbsolutePath());
+			for(Tracker tracker: mainApp.getListTraker())
+				tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure(), mainApp.getListTraker(), selectedDirectory);
+		}else {
+			messageErreur("Analyse en cour", "Analyse en cour", "Une analyse est deja en cour");
+		}
+		
+	}
+	
+    // ============ Methode Camera ================ //
+    
     @FXML
     public void startCamera() {
        if(mainApp.getThreadCaptureFlag()) {
@@ -144,6 +205,46 @@ public class AnalyseController {
     	   this.Startvideo.setText("Stop Capture");
        }
     }
+    public Frame flip(Frame frame) {
+    	this.iplImage = converterToIplImage.convert(frame);
+    	cvFlip(this.iplImage, this.iplImage, 1);
+    	return converterToIplImage.convert(this.iplImage);
+    }
+    
+	public void threadCam() {
+	  	   playThread = new Thread(new Runnable() { public void run() {
+	  		   try {
+	  			  ExecutorService executor = Executors.newSingleThreadExecutor();
+	  			  grabber.start(); // on le demarre 
+	  			  System.out.println(grabber.getGamma());
+	              while(mainApp.getThreadCaptureFlag()) {
+	            	 frame = grabber.grab();  
+	              	 if(frame == null) {
+	               		 break;
+	              	  }else {
+	              		 frame = flip(frame);
+	              		 frame.timestamp = System.currentTimeMillis()-startTime;         		
+	              		 traitement(frame);
+	              		 image = SwingFXUtils.toFXImage(converter.convert(frame), null);
+	              		 Platform.runLater(() -> RetourCam.setImage(image));
+	              	   }
+	              	 Thread.sleep(14);	   
+	               }
+	              grabber.stop();
+	              grabber.release();
+	              executor.shutdownNow();
+	              executor.awaitTermination(10, TimeUnit.SECONDS);
+	  		   } catch (Exception e) {
+	  			   e.printStackTrace();
+	  		   } catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+	  		 
+	  	   }});
+
+	  }
+	 // ============ Methode Analyse  ================ //
+	
     @FXML 
     void startAnalyse() {
     	if(mainApp.getThreadAnalyseFlag()) {
@@ -170,21 +271,13 @@ public class AnalyseController {
     	}
     }
 
-
-	@FXML
-	public void handleExportAll() {
-		if(mainApp.getAnalyseEndFlag()) {
-	        DirectoryChooser directoryChooser = new DirectoryChooser();
-	        directoryChooser.setInitialDirectory(new File("C:\\Users\\"));
-	        File selectedDirectory = directoryChooser.showDialog(mainApp.getPrimaryStage());
-	        System.out.println(selectedDirectory.getAbsolutePath());
-			for(Tracker tracker: mainApp.getListTraker())
-				tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure(), mainApp.getListTraker(), selectedDirectory);
-		}else {
-			messageErreur("Analyse en cour", "Analyse en cour", "Une analyse est deja en cour");
-		}
-		
+	public void traitement(Frame frame) {
+		if(mainApp.getThreadAnalyseFlag()) {
+			pileFrame.add(frame);		
+		}	
 	}
+	
+	// ============ Methode Mobile  ================ //
 	/**
 	 * Action lancï¿½ lorsque l'utilisateur clique sur le bouton delete Mobile
 	 */
@@ -212,7 +305,7 @@ public class AnalyseController {
 	}
 
 	/**
-	 *  Action lancï¿½e losrque l'utilisateur clique sur le bouton Edit
+	 *  Action lancé losrque l'utilisateur clique sur le bouton Edit
 	 */
 	@FXML
 	private void handleEditMobile() {
@@ -225,97 +318,34 @@ public class AnalyseController {
 		else if(selectMobile != null)
 			messageErreur("No Selection", "No Mobile Selected", "Please select a Mobile in the table.");	
 	}
+
+  
+	 // ============ Get et Set ================ //
 	
-	private void deleteAllDataGraph() {
-
-		tabPane.getTabs().removeAll(tabPane.getTabs());
-		graphiquePoint.getData().removeAll(graphiquePoint.getData());			
-	}
-
-	private void creatDataGraph() {
-		for(Mobile mob: mainApp.getMobileData()) {	
-			XYChart.Series<Number, Number> series = new XYChart.Series<>();
-			series.setName(mob.getName()); // TODO Regler problï¿½me ajout de donnï¿½es
-			graphiquePoint.getData().add(series);
-			Tab tab = new Tab();
-			tab.setText(mob.getName());
-		
-			Tracker tracker = new Tracker(mob, mainApp.getReferentiel(), series, mainApp.getMesure());
-			TableView<Point> table = new TableView<Point>();
-			TableColumn<Point,Float> xCol = new TableColumn<Point, Float>("X");
-			TableColumn<Point,Float> yCol = new TableColumn<Point,Float>("Y");
-			TableColumn<Point,Long> timeCol = new TableColumn<Point,Long>("timestamp");
-			table.setItems(tracker.getTrajectoire().getListOfPoint());
-			xCol.setCellValueFactory(cellData -> cellData.getValue().xProperty().asObject());
-			yCol.setCellValueFactory(cellData -> cellData.getValue().yProperty().asObject());
-			timeCol.setCellValueFactory(cellData -> cellData.getValue().timeProperty().asObject());
-			table.getColumns().addAll(timeCol, xCol, yCol);	
-			tab.setContent(table);
-			tabPane.getTabs().add(tab);	
-			mainApp.getListTraker().add(tracker);
-			
-		}
-	}
-    //Get et Set
 	/**
 	 * Permet de mettre en place la mainApp
 	 * @param mainApp
 	 */
 	public void setMainApp(MainApp mainApp) {
 	        this.mainApp = mainApp;
-	        tableMobile.setItems(mainApp.getMobileData());
-	        this.pileFrame = mainApp.getPileImage();
+	        tableMobile.setItems(mainApp.getMobileData()); // on ajoute les mobile deja présent a la liste
+	        this.pileFrame = mainApp.getPileImage(); // on récupere une réference a la pile d'echange
+	        // on ajoute la fermeture de la capture lors de la fermeture de la camera
 	        this.mainApp.getPrimaryStage().setOnCloseRequest((event)->{
 	        	if(mainApp.getThreadCaptureFlag())
 	         	   mainApp.setThreadCaptureFlag(false);
-	        	
 	        });
 	}
+	/**
+	 * Permet de mettre en place la cameras ainsi que le grabber
+	 * @param cam
+	 */
 	public void dsetCameraChoice(int cam) {
 		this.choiceCam = cam;
 		grabber = new VideoInputFrameGrabber(choiceCam);
-		grabber.setFrameRate(60);
-		grabber.setImageHeight(1080);
-		grabber.setImageWidth(1920);
-	}
-
-	
-	public void traitement(Frame frame) {
-		if(mainApp.getThreadAnalyseFlag()) {
-			pileFrame.add(frame);		
-		}	
-	}
-	public void threadCam() {
-  	   playThread = new Thread(new Runnable() { public void run() {
-  		   try {
-  			  ExecutorService executor = Executors.newSingleThreadExecutor();
-  			  grabber.start(); // on le demarre 
-              while(mainApp.getThreadCaptureFlag()) {
-            	 frame = grabber.grab();  
-            	 
-              	 if(frame == null) {
-               		 break;
-              	  }else {
-              		 frame.timestamp = System.currentTimeMillis()-startTime;         		
-              		 traitement(frame);
-              		 image = SwingFXUtils.toFXImage(converter.convert(frame), null);
-              		 Platform.runLater(() -> RetourCam.setImage(image));
-              	   }
-              	 Thread.sleep(15);	   
-               }
-              grabber.stop();
-              grabber.release();
-              executor.shutdownNow();
-              executor.awaitTermination(10, TimeUnit.SECONDS);
-  		   } catch (Exception e) {
-  			   e.printStackTrace();
-  		   } catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-  		 
-  	   }});
-
-  }
-	
+		grabber.setFrameRate(60); // Frame Rate
+		grabber.setImageHeight(1080); // Largeur
+		grabber.setImageWidth(1920); // Hauteur
+	}	
 }
 

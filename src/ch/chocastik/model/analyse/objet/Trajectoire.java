@@ -53,7 +53,7 @@ public class Trajectoire {
 		}
 		mesure.calculateNbPixel();
 		try {
-			PrintWriter writer = new PrintWriter("C:\\Users\\Rose\\Documents\\Projet\\Unige\\CHOCastik\\Resultat\\"+mobile.getName()+".txt");
+			PrintWriter writer = new PrintWriter(file.getAbsolutePath()+"\\" +mobile.getName()+".txt");
 			writer.println("Mobile name: "+ mobile.getName());
 			writer.println("Nombre de pixels : "+mesure.getNbPixel() + " Coefficient : "+mesure.getCoef());
 			for(Point point: listOfPoint) {
