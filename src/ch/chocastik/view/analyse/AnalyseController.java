@@ -131,20 +131,20 @@ public class AnalyseController {
         alert.showAndWait();
 	}
 	/***
-	 * Met en place les different graphe nécessaire 
+	 * Met en place les differents graphes necessaire 
 	 */
 	private void creatDataGraph() {
 		for(Mobile mob: mainApp.getMobileData()) {	
 			// pour chaque mobile
-			XYChart.Series<Number, Number> series = new XYChart.Series<>(); //on commence par crée un nouveau graphe
+			XYChart.Series<Number, Number> series = new XYChart.Series<>(); //on commence par cree un nouveau graphe
 			series.setName(mob.getName()); //on lui donne le nom du mobile
-			graphiquePoint.getData().add(series); // on l'ajoute au graphe deja préesent
-			 // on crée un nouveau traker et onl'ajoute a la liste des tracker
+			graphiquePoint.getData().add(series); // on l'ajoute au graphe deja present
+			 // on cree un nouveau traker et onl'ajoute a la liste des trackers
 			Tracker tracker = new Tracker(mob, mainApp.getReferentiel(), series, mainApp.getMesure());
 			mainApp.getListTraker().add(tracker);
-			Tab tab = new Tab(); // on crée un nouvelle onglet
-			tab.setText(mob.getName()); // on lui donne le nom du mobile en cour
-			// on ajoute un tableau suivant l'ajout des point concerenant le mobile en cour
+			Tab tab = new Tab(); // on cree un nouvel onglet
+			tab.setText(mob.getName()); // on lui donne le nom du mobile en cours
+			// on ajoute un tableau suivant l'ajout des points concerenant le mobile en cours
 			TableView<Point> table = new TableView<Point>();
 			TableColumn<Point,Float> xCol = new TableColumn<Point, Float>("X");
 			TableColumn<Point,Float> yCol = new TableColumn<Point,Float>("Y");
@@ -154,13 +154,13 @@ public class AnalyseController {
 			yCol.setCellValueFactory(cellData -> cellData.getValue().yProperty().asObject());
 			timeCol.setCellValueFactory(cellData -> cellData.getValue().timeProperty().asObject());
 			table.getColumns().addAll(timeCol, xCol, yCol);	
-			//on ajout le nouvelle onglet a la table des onglets
+			//on ajoute le nouvel onglet a la table des onglets
 			tab.setContent(table);
 			tabPane.getTabs().add(tab);				
 		}
 	}
 	/**
-	 * permet de reset tout les donnée contenu dans les graphe
+	 * permet de reinitialiser toutes les donnees contenues dans les graphes
 	 */
 	private void deleteAllDataGraph() {
 		tabPane.getTabs().removeAll(tabPane.getTabs());
@@ -179,7 +179,7 @@ public class AnalyseController {
 	public void handleExportAll() {
 		if(mainApp.getAnalyseEndFlag()) {
 			// si l'analyse est fini on authorise l'export
-			// on crée un nouvelle fenetre de selection de dossier d'exports
+			// on cree une nouvelle fenetre de selection de dossier d'export
 	        DirectoryChooser directoryChooser = new DirectoryChooser();
 	        directoryChooser.setInitialDirectory(new File("C:\\Users\\"));
 	        File selectedDirectory = directoryChooser.showDialog(mainApp.getPrimaryStage());
@@ -193,7 +193,7 @@ public class AnalyseController {
 				}
 			}
 		}else {
-			messageErreur("Analyse en cour", "Analyse en cour", "Une analyse est deja en cour");
+			messageErreur("Analyse en cours", "Analyse en cours", "Une analyse est deja en cours");
 		}
 		
 	}
@@ -267,10 +267,10 @@ public class AnalyseController {
         			analyseThread.start();
         			this.StartAnalyse.setText("Stop Analyse");
         		}else {
-        			messageErreur("No Selection", "No Mobile Selected", "Please select a Mobile in the table.");
+        			messageErreur("Pas de sÃ©lection", "Pas de mobile sÃ©lectionnÃ©", "Veuillez sÃ©lectionner un mobile sur la table.");
         		}
     		}else {
-    			messageErreur("Analyse en cour", "Analyse en cour", "Une analyse est deja en cour");
+    			messageErreur("Analyse en cours", "Analyse en cours", "Une analyse est deja en cours");
     		}
     		
     	}
@@ -284,7 +284,7 @@ public class AnalyseController {
 	
 	// ============ Methode Mobile  ================ //
 	/**
-	 * Action lancï¿½ lorsque l'utilisateur clique sur le bouton delete Mobile
+	 * Action lancee lorsque l'utilisateur clique sur le bouton supprimer Mobile
 	 */
 	@FXML
 	private void handleDeleteMobile() {
@@ -292,10 +292,10 @@ public class AnalyseController {
 		if(selectMobile != null)
 			tableMobile.getItems().remove(selectMobile);
 		else
-			messageErreur("No Selection", "No Mobile Selected", "Please select a Mobile in the table.");
+			messageErreur("Pas de sÃ©lection", "Pas de mobile sÃ©lectionnÃ©", "Veuillez sÃ©lectionner un mobile sur la table.");
 	}
 	/**
-	 * Action lancï¿½e lorsque l'utilisateur clique sur le bouton Add
+	 * Action lancee lorsque l'utilisateur clique sur le bouton Ajouter
 	 */
 	@FXML
 	private void handleNewMobile() {
@@ -304,13 +304,13 @@ public class AnalyseController {
 			mainApp.showAddGlisseur(mobile, image); // si il n'y pas d'erreur on l'ajoute
 			this.mainApp.getMobileData().add(mobile);
 		}else {
-			messageErreur("Aucune image disponible", "Aucune image disponssible", "Aucune image disponible veuillez demarer la capture");
+			messageErreur("Aucune image disponible", "Aucune image disponible", "Aucune image disponible, veuillez demarrer la capture");
 		}
 		
 	}
 
 	/**
-	 *  Action lancé losrque l'utilisateur clique sur le bouton Edit
+	 *  Action lancee losrque l'utilisateur clique sur le bouton modifier
 	 */
 	@FXML
 	private void handleEditMobile() {
@@ -319,9 +319,9 @@ public class AnalyseController {
 		if(selectMobile != null && image != null)
 			mainApp.showAddGlisseur(selectMobile, image);
 		else if(image == null) 
-			messageErreur("Aucune image disponible", "Aucune image disponssible", "Aucune image disponible veuillez demarer la capture");
+			messageErreur("Aucune image disponible", "Aucune image disponible", "Aucune image disponible, veuillez dÃ©marrer la capture");
 		else if(selectMobile != null)
-			messageErreur("No Selection", "No Mobile Selected", "Please select a Mobile in the table.");	
+			messageErreur("Pas de sÃ©lection", "Pas de mobile sÃ©lectionnÃ©", "Veuillez sÃ©lectionner un mobile sur la table.");	
 	}
 
   
@@ -333,8 +333,8 @@ public class AnalyseController {
 	 */
 	public void setMainApp(MainApp mainApp) {
 	        this.mainApp = mainApp;
-	        tableMobile.setItems(mainApp.getMobileData()); // on ajoute les mobile deja présent a la liste
-	        this.pileFrame = mainApp.getPileImage(); // on récupere une réference a la pile d'echange
+	        tableMobile.setItems(mainApp.getMobileData()); // on ajoute les mobiles deja present dans la liste
+	        this.pileFrame = mainApp.getPileImage(); // on recupere une reference a la pile d'echange
 	        // on ajoute la fermeture de la capture lors de la fermeture de la camera
 	        this.mainApp.getPrimaryStage().setOnCloseRequest((event)->{
 	        	if(mainApp.getThreadCaptureFlag())
@@ -342,13 +342,13 @@ public class AnalyseController {
 	        });
 	}
 	/**
-	 * Permet de mettre en place la cameras ainsi que le grabber
+	 * Permet de mettre en place la camera ainsi que le grabber
 	 * @param cam
 	 */
 	public void dsetCameraChoice(int cam) {
 		this.choiceCam = cam;
 		grabber = new VideoInputFrameGrabber(choiceCam);
-		grabber.setFrameRate(60); // Frame Rate
+		grabber.setFrameRate(60); // frÃ©quence de trame
 		grabber.setImageHeight(1080); // Largeur
 		grabber.setImageWidth(1920); // Hauteur
 		//grabber.setOption("transpose","cclock_flip");

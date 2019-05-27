@@ -24,7 +24,7 @@ public class Trajectoire {
 	}
 	
 	public void addPoint(Point point) {
-			// on transforme le point pour le passer d'un referentielle à l'orgine en haut à gauche, a en bas à gauche
+			// on transforme le point pour le passer d'un referentielle a l'orgine en haut a gauche, a en bas a gauche
 			this.referentiel.transformToNaturalReferentiel(point);
 			// on transpose le point dans le nouveau referentielle
 			this.referentiel.transformToRelatif(point);
@@ -42,9 +42,9 @@ public class Trajectoire {
 		}
 		// on calcule la moyenne trois points par trois points
 		meanThreePoint();
-		// on caclue la mesure
+		// on calcule la mesure
 		mesure.calculateNbPixel();
-		// on ecrit ensuite la liste des point dans le fichiers
+		// on ecrit ensuite la liste des points dans le fichier
 		return writeToFile(file.getAbsolutePath(), mesure);
 	}
 	
@@ -79,9 +79,9 @@ public class Trajectoire {
 			writer.println("Mobile name: "+ mobile.getName());
 			// on ecrit le coeficient
 			writer.println("Nombre de pixels : "+mesure.getNbPixel() + " Coefficient : "+mesure.getCoef());
-			// on ajoute la liste des point
+			// on ajoute la liste des points
 			for(Point point: listOfPoint) {
-				// on transforme le point pour obtenir une valeur relle
+				// on transforme le point pour obtenir une valeur reelle
 				mesure.transformPointToRealPoint(point);
 				writer.println(point.getTimecode()+":"+point.getX()+":"+point.getY());
 			}

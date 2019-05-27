@@ -45,7 +45,7 @@ public class Analyse implements Runnable {
 			// on recupere une frame
 			Frame frame = pileFrame.poll(); 
 			if(frame != null) {
-				// si elle est pas null on la dispatch à chaque tracker
+				// si elle est pas null on l'a reparti sur chaque tracker
 				for(Tracker trac: listTraker) 
 					trac.detectCircle(converterToIplImage.convert(frame),frame.timestamp);
 			}
@@ -55,12 +55,12 @@ public class Analyse implements Runnable {
 	public void run() {
 		// on indique que l'on commence l'analyse
 		mainApp.setAnalyseEndFlag(false);
-		//tant que le Thread n'est pas stoppée on repete l'action
+		//tant que le Thread n'est pas stoppe on repete l'action
 		while(mainApp.getThreadAnalyseFlag()) {
 			if(!pileFrame.isEmpty()) 
 				analyseFrame();
 		}
-		// si le thread est stoppée mais que le liste n'est pas vide on la vide
+		// si le thread est stoppe mais que le liste n'est pas vide on la vide
 		if(!mainApp.getThreadAnalyseFlag() && !pileFrame.isEmpty()) {
 			while(!pileFrame.isEmpty()) {
 				analyseFrame();

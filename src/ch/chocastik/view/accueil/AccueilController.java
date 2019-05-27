@@ -41,19 +41,19 @@ public class AccueilController {
     
 	
 	/**
-	 * Lors du clic sur le bouton Réglage on lance la fenetre de Préparation
+	 * Lors du clic sur le bouton Reglage on lance la fenetre de Preparation
 	 */
 	@FXML
 	public void OpenReglage() {
-		// si l'utilisateur n'a choisit aucune source vidéo on affiche un message d'erreur
+		// si l'utilisateur n'a choisit aucune source video, on affiche un message d'erreur
 		if(choice == -1) {
 			Alert alert = new Alert(AlertType.WARNING);
 		    alert.initOwner(mainApp.getPrimaryStage());
-		    alert.setTitle("Pas de source vidéo");
-	        alert.setHeaderText("Pas de source vidéo selctionnées"); 
-	        alert.setContentText("Veuillez choisir une source vidéo correct");
+		    alert.setTitle("Pas de source video");
+	        alert.setHeaderText("Pas de source video selctionnee"); 
+	        alert.setContentText("Veuillez choisir une source video correct");
 	        alert.showAndWait();
-	     // sinon on passe à la suite
+	     // sinon on passe a la suite
 		}else {
 			this.mainApp.showPreparation(choice);
 		}
@@ -63,7 +63,7 @@ public class AccueilController {
     @FXML
     private void initialize() throws org.bytedeco.javacv.FrameGrabber.Exception{
     	int n = VideoInputFrameGrabber.getDeviceDescriptions().length;
-    	SelectionCam.setText("Aucune caméras");
+    	SelectionCam.setText("Aucune cameras");
 		for (int i = 0; i < n; i++) {
 			MenuItem menuItem = new MenuItem("Device "+i+" : " +VideoInputFrameGrabber.getDeviceDescriptions()[i]);
 			menuItem.setOnAction(createChoiceHandler(i));
@@ -72,7 +72,7 @@ public class AccueilController {
     }
     
     
-    // ============ Methode pour la création et la gestion du menu ================ //
+    // ============ Methode pour la creation et la gestion du menu ================ //
     
     
     /**
@@ -91,7 +91,7 @@ public class AccueilController {
      * 
      */
     private void setChoice(int index) throws org.bytedeco.javacv.FrameGrabber.Exception {
-    	//On affiche pour chaque device détectés le nom dans le menu
+    	//On affiche pour chaque appareil detecte son nom dans le menu
     	SelectionCam.setText("Device "+index+" : " + VideoInputFrameGrabber.getDeviceDescriptions()[index]);
     	this.choice = index;
     	

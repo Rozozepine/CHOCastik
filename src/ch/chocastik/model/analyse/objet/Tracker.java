@@ -53,35 +53,35 @@ public class Tracker {
 	
 	public void detectCircle(IplImage imgSrc, long timecode) {
 		CvMemStorage mem = CvMemStorage.create();
-		// on commence par extraire les tache de la couleur donnée
+		// on commence par extraire les taches de la couleur donnee
 		IplImage detectThrs = getThresholdImage(imgSrc);
 		IplImage WorkingImage = cvCreateImage(detectThrs.asCvMat().cvSize(), IPL_DEPTH_8U, 1);   
-		// on érode et dilate ensuite l'image en noir et blanc contenant les zone detectée pour supprimer les point isolée et 
-		// augmenter les grande zone
+		// on erode et dilate ensuite l'image en noir et blanc contenant les zones detectees pour supprimer les points isoles et 
+		// augmenter les grandes zones
         cvErode(detectThrs, WorkingImage, null, mobile.getErodeCount());    
         cvDilate(WorkingImage, WorkingImage, null, mobile.getDilateCount());
         // on lance ensuite la detection de cercle dans cette image
         CvSeq circles = cvHoughCircles( 
-        		WorkingImage, //Input image
-        	    mem, //Memory Storage
-        	    CV_HOUGH_GRADIENT, //Detection method
+        		WorkingImage, //Image d'entree
+        	    mem, //Memoire de stockage
+        	    CV_HOUGH_GRADIENT, // Methode de detection
         	    1, //Inverse ratio
-        	    10, //Minimum distance between the centers of the detected circles
-        	    100, //Higher threshold for canny edge detector
-        	    10, //Threshold at the center detection stage
-        	    mobile.getMinRad(),//min radius
-        	    mobile.getMaxRad() //max radius
+        	    10, //distance Minimum entre les centres des cercles detectes 
+        	    100, //Seuil le plus eleve pour le detecteur d'arrete canny 
+        	    10, //Seuil au niveau de la detection du centre 
+        	    mobile.getMinRad(),// rayon minimum
+        	    mobile.getMaxRad() //rayon maximimum
         );	
         for(int i = 0; i < circles.total(); i++){
-        	// pour chaque cercle detecté
+        	// pour chaque cercle detecte
             CvPoint3D32f circle = new CvPoint3D32f(cvGetSeqElem(circles, i));
             CvPoint center = cvPointFrom32f(new CvPoint2D32f(circle.x(), circle.y()));
             // on fabrique un nouveau point contenant le centre du cercle et le timecode de la frame
             Point point = new Point(circle.x(), circle.y(), timecode);
             float rad = circle.z();
-            // on verifie que le point appartient bien au referentielle
+            // on verifie que le point appartient bien au referentiel
             if(referentiel.checkCordonne(point)) {
-            		// on ajoute la mesure de son rayon au calcule de la mesure
+            		// on ajoute la mesure de son rayon au calcul de la mesure
             		mesure.addRadius(rad);
             		// on ajoute le point a la trajectoire
             		addPointToTrajectoire(point);
@@ -94,7 +94,7 @@ public class Tracker {
 	}
 	private void addPointToTrajectoire(Point point) {
 		if(getTrajectoire() == null) {
-			// si la trajectoire n'existe pas un la crée
+			// si la trajectoire n'existe pas un la cree
 			setTrajectoire(new Trajectoire(this.referentiel, this.mobile, series));
 			getTrajectoire().addPoint(point);
 		}else{
@@ -106,11 +106,11 @@ public class Tracker {
 		IplImage imgThreshold = cvCreateImage(orgImg.asCvMat().cvSize(), 8, 1);
 		IplImage imgHSV = cvCreateImage(orgImg.asCvMat().cvSize(), 8, 3);
 		cvCvtColor(orgImg, imgHSV, CV_BGR2HSV);
-		// on extrait les couleur
+		// on extrait les couleurs
 		cvInRangeS(imgHSV, mobile.getHsvMin(), mobile.getHsvMax(), imgThreshold);
-		// on la floute legerement pour eviter des disparité de pixel entre chaque image
+		// on l'a floute legerement pour eviter des disparites de pixels entre chaque image
     	cvSmooth(imgThreshold, imgThreshold, CV_MEDIAN, 15,0,0,0);
-    	// on libere l'image de travail pour eviter des problème de mémoire
+    	// on libere l'image de travail pour eviter des probleme de memoire
        	cvReleaseImage(imgHSV);
     	return imgThreshold;
 	}
