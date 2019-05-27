@@ -49,7 +49,7 @@ public class PreparationController {
 	@FXML
 	private  TableColumn<Mobile, String> colName;
 	@FXML
-	private  TableColumn<Mobile, Color> colCouleur;
+	private  TableColumn<Mobile,  String> colCouleur;
     @FXML
     private TextField nameMobile;
     

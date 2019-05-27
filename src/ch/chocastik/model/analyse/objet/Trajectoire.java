@@ -12,6 +12,7 @@ import javafx.scene.chart.XYChart;
 
 public class Trajectoire {
 	private ObservableList<Point> listOfPoint = FXCollections.observableArrayList();
+	private ObservableList<Point> listOfPointTnp = FXCollections.observableArrayList();
 	private Referentiel referentiel;
 	private Mobile mobile;
 	private int distanceMin;
@@ -34,9 +35,11 @@ public class Trajectoire {
 			this.listOfPoint.add(point);
 	
 	}
-	public boolean exportTrajectoire(Mesure mesure, ArrayList<Tracker> listTraker, File file) {
+
+	public void preparationExport(Mesure mesure, ArrayList<Tracker> listTraker) {
+		listOfPointTnp = FXCollections.observableArrayList();
 		for(Tracker traker: listTraker) {
-			if(this != traker.getTrajectoire()) {
+			if(!this.getMobile().getName().equals(traker.getTrajectoire().getMobile().getName())) {
 				this.listOfPoint.retainAll(traker.getTrajectoire().getListOfPoint());
 			}
 		}
@@ -44,32 +47,36 @@ public class Trajectoire {
 		meanThreePoint();
 		// on calcule la mesure
 		mesure.calculateNbPixel();
-		// on ecrit ensuite la liste des points dans le fichier
-		return writeToFile(file.getAbsolutePath(), mesure);
+		for(Point point: listOfPointTnp) 
+			mesure.transformPointToRealPoint(point);
+		
 	}
 	
 	public void meanThreePoint() {
-		ObservableList<Point> listOfPointTnp = FXCollections.observableArrayList();
 		int compteur = 0;
+		float tnpX = 0;
+		float tnpY = 0;
+		long tnpTime = 0;
 		for(Point point: this.listOfPoint) {
-			float tnpX = 0;
-			float tnpY = 0;
-			long tnpTime = 0;
-			if(compteur == 0 || compteur == 1) {
+			if(compteur == 0) {
 				tnpX = tnpX + point.getX();
 				tnpY = tnpY + point.getY();
-				tnpTime = tnpTime + point.getTimecode();
-				compteur ++;
-			}
-			if(compteur == 2) {
+				compteur = compteur+1;
+			}else if(compteur == 1) {
+				tnpX = tnpX + point.getX();
+				tnpY = tnpY + point.getY();
+				tnpTime = point.getTimecode();
+				compteur = compteur+1;
+			}else if(compteur == 2) {
 				compteur = 0;
-				tnpX = tnpX/3;
-				tnpY = tnpY/3;
-				tnpTime = tnpTime/3;
+				tnpX = (tnpX+point.getX())/3;
+				tnpY = (tnpY+point.getY())/3;
 				listOfPointTnp.add(new Point(tnpX, tnpY, tnpTime));
+				tnpX = 0;
+				tnpY = 0;
+				tnpTime = 0;
 			}
 		}
-		this.listOfPoint = listOfPointTnp;
 	}
 	public boolean writeToFile(String path, Mesure mesure) {
 		try {
@@ -79,10 +86,9 @@ public class Trajectoire {
 			writer.println("Mobile name: "+ mobile.getName());
 			// on ecrit le coeficient
 			writer.println("Nombre de pixels : "+mesure.getNbPixel() + " Coefficient : "+mesure.getCoef());
-			// on ajoute la liste des points
-			for(Point point: listOfPoint) {
-				// on transforme le point pour obtenir une valeur reelle
-				mesure.transformPointToRealPoint(point);
+			// on ajoute la liste des point
+			for(Point point: listOfPointTnp) {
+				// on transforme le point pour obtenir une valeur relle
 				writer.println(point.getTimecode()+":"+point.getX()+":"+point.getY());
 			}
 			// on ferme le fichier

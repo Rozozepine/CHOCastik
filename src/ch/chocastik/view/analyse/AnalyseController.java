@@ -95,7 +95,7 @@ public class AnalyseController {
 	@FXML
 	private  TableColumn<Mobile, String> colName;
 	@FXML
-	private  TableColumn<Mobile, Color> colCouleur;
+	private  TableColumn<Mobile, String> colCouleur;
 
 
     // Attribut de l'Objet
@@ -113,6 +113,7 @@ public class AnalyseController {
 	final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
 	private VideoInputFrameGrabber grabber;
 	private long startTime;
+	private boolean verifExport = true;
 	IplImage iplImage;
 	
 	 // ============ Methode Utilitaire ================ //
@@ -185,13 +186,14 @@ public class AnalyseController {
 	        File selectedDirectory = directoryChooser.showDialog(mainApp.getPrimaryStage());
 	        System.out.println(selectedDirectory.getAbsolutePath());
 			for(Tracker tracker: mainApp.getListTraker()) {
-				boolean ok = tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure(), mainApp.getListTraker(), selectedDirectory);
-				if(ok) {
-					
-				}else {
-					
-				}
+				if(this.verifExport) 
+					tracker.getTrajectoire().preparationExport(mainApp.getMesure(), mainApp.getListTraker());
+				
+				if(!tracker.getTrajectoire().writeToFile(selectedDirectory.getAbsolutePath(), mainApp.getMesure())) 
+					messageErreur("Erreur dans l'export", "Erreur dans l'export", "Erreur dans l'export");
 			}
+			if(this.verifExport)
+				this.verifExport = false;
 		}else {
 			messageErreur("Analyse en cours", "Analyse en cours", "Une analyse est deja en cours");
 		}
@@ -266,6 +268,7 @@ public class AnalyseController {
         			mainApp.setThreadAnalyseFlag(true);
         			analyseThread.start();
         			this.StartAnalyse.setText("Stop Analyse");
+        			this.verifExport = true;
         		}else {
         			messageErreur("Pas de sélection", "Pas de mobile sélectionné", "Veuillez sélectionner un mobile sur la table.");
         		}
@@ -340,6 +343,7 @@ public class AnalyseController {
 	        	if(mainApp.getThreadCaptureFlag())
 	         	   mainApp.setThreadCaptureFlag(false);
 	        });
+	        
 	}
 	/**
 	 * Permet de mettre en place la camera ainsi que le grabber

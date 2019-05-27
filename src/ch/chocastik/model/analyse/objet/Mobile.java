@@ -52,8 +52,9 @@ public class Mobile {
 		this.color = new SimpleObjectProperty<Color>(color2);
 	}
 
-	public ObjectProperty<Color> colorProperty() {
-		return color;
+	public StringProperty colorProperty() {
+		StringProperty tnp = new SimpleStringProperty(getColor().toString());
+		return tnp;
 	}
 	public StringProperty nameExportProperty() {
 		return nameExport;
