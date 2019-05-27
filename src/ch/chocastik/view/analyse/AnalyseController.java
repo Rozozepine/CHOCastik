@@ -34,6 +34,7 @@ import ch.chocastik.controller.MainApp;
 import ch.chocastik.model.analyse.objet.Point;
 
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -94,7 +95,7 @@ public class AnalyseController {
 	@FXML
 	private  TableColumn<Mobile, String> colName;
 	@FXML
-	private  TableColumn<Mobile, String> colCouleur;
+	private  TableColumn<Mobile, Color> colCouleur;
 
 
     // Attribut de l'Objet
@@ -171,7 +172,7 @@ public class AnalyseController {
     	this.AxeX.setLabel("Axe X");
     	this.AxeY.setLabel("Axe Y");
 		colName.setCellValueFactory(cellData -> cellData.getValue().nameExportProperty());
-		colCouleur.setCellValueFactory(cellData -> cellData.getValue().nameExportProperty());
+		colCouleur.setCellValueFactory(cellData -> cellData.getValue().colorProperty());
     }
     
 	@FXML
@@ -183,8 +184,14 @@ public class AnalyseController {
 	        directoryChooser.setInitialDirectory(new File("C:\\Users\\"));
 	        File selectedDirectory = directoryChooser.showDialog(mainApp.getPrimaryStage());
 	        System.out.println(selectedDirectory.getAbsolutePath());
-			for(Tracker tracker: mainApp.getListTraker())
-				tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure(), mainApp.getListTraker(), selectedDirectory);
+			for(Tracker tracker: mainApp.getListTraker()) {
+				boolean ok = tracker.getTrajectoire().exportTrajectoire(mainApp.getMesure(), mainApp.getListTraker(), selectedDirectory);
+				if(ok) {
+					
+				}else {
+					
+				}
+			}
 		}else {
 			messageErreur("Analyse en cour", "Analyse en cour", "Une analyse est deja en cour");
 		}
@@ -212,7 +219,7 @@ public class AnalyseController {
 	  		   try {
 	  			  ExecutorService executor = Executors.newSingleThreadExecutor();
 	  			  grabber.start(); // on le demarre 
-	  			  System.out.println(grabber.getGamma());
+	  			 
 	              while(mainApp.getThreadCaptureFlag()) {
 	            	 frame = grabber.grab();  
 	              	 if(frame == null) {

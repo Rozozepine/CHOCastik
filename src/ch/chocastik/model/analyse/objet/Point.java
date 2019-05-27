@@ -54,9 +54,6 @@ public class Point {
     public FloatProperty xProperty() {
         return x;
     }
-	public double getDistance(Point point) {
-		return Math.sqrt(Math.pow((point.getX() - this.x.get()),2) + Math.pow((point.getY()-this.y.get()),2));
-	}
 	@Override
 	public boolean equals(Object other){
 	    if (other == null) 

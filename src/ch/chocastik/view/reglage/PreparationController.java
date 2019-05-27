@@ -49,7 +49,7 @@ public class PreparationController {
 	@FXML
 	private  TableColumn<Mobile, String> colName;
 	@FXML
-	private  TableColumn<Mobile, String> colCouleur;
+	private  TableColumn<Mobile, Color> colCouleur;
     @FXML
     private TextField nameMobile;
     
@@ -73,7 +73,7 @@ public class PreparationController {
     @FXML
     private void initialize() {
 		colName.setCellValueFactory(cellData -> cellData.getValue().nameExportProperty());
-		colCouleur.setCellValueFactory(cellData -> cellData.getValue().nameExportProperty());
+		colCouleur.setCellValueFactory(cellData -> cellData.getValue().colorProperty());
     }
 	
     /**
@@ -120,7 +120,6 @@ public class PreparationController {
      	  			  grabber.setImageWidth(1920);
      	  			  grabber.start(); // on le demarre      	          
      	  			  frame = grabber.grab();
-     	  			
      	              image = SwingFXUtils.toFXImage(converter.convert(frame), null);      
      	              Platform.runLater(() -> {
      	              		    	 referentielFrame.setImage(image);

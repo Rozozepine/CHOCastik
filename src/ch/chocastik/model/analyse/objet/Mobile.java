@@ -44,12 +44,12 @@ public class Mobile {
     private  int DilateCount = 3;
     private  int maxRad = 20;
     private  int minRad = 12;
-    private int tolHue = 10;
+    private int tolHue;
 
     
 	public Mobile(Color color2, String name) {
 		this.nameExport = new SimpleStringProperty(name);
-		this.setColor(new SimpleObjectProperty<Color>(color2));
+		this.color = new SimpleObjectProperty<Color>(color2);
 	}
 
 	public ObjectProperty<Color> colorProperty() {
@@ -77,9 +77,6 @@ public class Mobile {
 	}
 	public int getTolHue() {
 		return this.tolHue;
-	}
-	public void setColor(ObjectProperty<Color> color) {
-		this.color = color;
 	}
 	public  int getMinRad() {
 		return minRad;

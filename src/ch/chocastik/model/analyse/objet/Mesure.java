@@ -9,9 +9,9 @@ public class Mesure {
 		private ArrayList<Float> listRad = new ArrayList<Float>();
 		
 		public void transformPointToRealPoint(Point point) {
-			setCoef((getDistanceRelle()/getNbPixel()));
-			point.setX(point.getX()*getCoef());
-			point.setY(point.getY()*getCoef());
+			this.coef = this.distanceRelle/this.nbPixel;
+			point.setX(point.getX()*this.coef);
+			point.setY(point.getY()*this.coef);
 			
 		}	
 		public void addRadius(float rad) {
@@ -24,6 +24,7 @@ public class Mesure {
 				somme = rad + somme;
 			somme = somme/listRad.size();
 			this.setNbPixel(Math.round(somme));
+
 		}
 
 		public float getDistanceRelle() {

@@ -53,10 +53,14 @@ public class Tracker {
 	
 	public void detectCircle(IplImage imgSrc, long timecode) {
 		CvMemStorage mem = CvMemStorage.create();
+		// on commence par extraire les tache de la couleur donnée
 		IplImage detectThrs = getThresholdImage(imgSrc);
 		IplImage WorkingImage = cvCreateImage(detectThrs.asCvMat().cvSize(), IPL_DEPTH_8U, 1);   
+		// on érode et dilate ensuite l'image en noir et blanc contenant les zone detectée pour supprimer les point isolée et 
+		// augmenter les grande zone
         cvErode(detectThrs, WorkingImage, null, mobile.getErodeCount());    
         cvDilate(WorkingImage, WorkingImage, null, mobile.getDilateCount());
+        // on lance ensuite la detection de cercle dans cette image
         CvSeq circles = cvHoughCircles( 
         		WorkingImage, //Input image
         	    mem, //Memory Storage
@@ -69,12 +73,17 @@ public class Tracker {
         	    mobile.getMaxRad() //max radius
         );	
         for(int i = 0; i < circles.total(); i++){
+        	// pour chaque cercle detecté
             CvPoint3D32f circle = new CvPoint3D32f(cvGetSeqElem(circles, i));
             CvPoint center = cvPointFrom32f(new CvPoint2D32f(circle.x(), circle.y()));
+            // on fabrique un nouveau point contenant le centre du cercle et le timecode de la frame
             Point point = new Point(circle.x(), circle.y(), timecode);
             float rad = circle.z();
+            // on verifie que le point appartient bien au referentielle
             if(referentiel.checkCordonne(point)) {
+            		// on ajoute la mesure de son rayon au calcule de la mesure
             		mesure.addRadius(rad);
+            		// on ajoute le point a la trajectoire
             		addPointToTrajectoire(point);
             }
             	
@@ -85,9 +94,11 @@ public class Tracker {
 	}
 	private void addPointToTrajectoire(Point point) {
 		if(getTrajectoire() == null) {
+			// si la trajectoire n'existe pas un la crée
 			setTrajectoire(new Trajectoire(this.referentiel, this.mobile, series));
 			getTrajectoire().addPoint(point);
 		}else{
+			// sinon on ajoute le point
 			getTrajectoire().addPoint(point);
 		}
 	}
@@ -95,8 +106,11 @@ public class Tracker {
 		IplImage imgThreshold = cvCreateImage(orgImg.asCvMat().cvSize(), 8, 1);
 		IplImage imgHSV = cvCreateImage(orgImg.asCvMat().cvSize(), 8, 3);
 		cvCvtColor(orgImg, imgHSV, CV_BGR2HSV);
+		// on extrait les couleur
 		cvInRangeS(imgHSV, mobile.getHsvMin(), mobile.getHsvMax(), imgThreshold);
+		// on la floute legerement pour eviter des disparité de pixel entre chaque image
     	cvSmooth(imgThreshold, imgThreshold, CV_MEDIAN, 15,0,0,0);
+    	// on libere l'image de travail pour eviter des problème de mémoire
        	cvReleaseImage(imgHSV);
     	return imgThreshold;
 	}
