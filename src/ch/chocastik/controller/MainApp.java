@@ -60,6 +60,7 @@ public class MainApp extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 	    this.primaryStage.setTitle("CHOCastik");
+	    this.primaryStage.getIcons().add(new Image("/ch/chocastik/view/Images/icone.png"));
 
 	    showAcceuil(); 
 	}
