@@ -32,7 +32,7 @@
                               <Font name="Arial Black" size="33.0" />
                            </font>
                         </Label>
-                        <JFXButton layoutX="426.0" layoutY="15.0" prefHeight="56.0" prefWidth="130.0" text=" " />
+                        <JFXButton layoutX="426.0" layoutY="15.0" onAction="#handlerHelp" prefHeight="56.0" prefWidth="130.0" text=" " />
                      </children>
                   </Group>
                   <Label layoutX="291.0" layoutY="14.0" prefHeight="143.0" prefWidth="418.0" text="Analyse">

@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane minHeight="750.0" minWidth="1280.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+<AnchorPane minHeight="770.0" minWidth="1280.0" prefHeight="783.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.help.HelphController">
    <children>
-      <ImageView fitWidth="1280.0" layoutX="166.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <ImageView fx:id="idImage" fitHeight="720.0" fitWidth="1280.0" layoutX="166.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Label fx:id="idIndex" layoutX="623.0" layoutY="740.0" text="0/8" AnchorPane.leftAnchor="623.0" AnchorPane.rightAnchor="623.0">
+         <font>
+            <Font name="Arial Black" size="20.0" />
+         </font>
+      </Label>
+      <JFXButton layoutX="681.0" layoutY="733.0" onAction="#handlerSuivant" style="-fx-background-color: #17BEC6; -fx-background-radius: 20;" text="Suivant" AnchorPane.leftAnchor="680.0">
+         <font>
+            <Font name="Arial Black" size="20.0" />
+         </font></JFXButton>
+      <JFXButton layoutX="453.0" layoutY="733.0" onAction="#handlerPrecedent" style="-fx-background-color: #17BEC6; -fx-background-radius: 20;" text="Précédent" AnchorPane.rightAnchor="680.0">
+         <font>
+            <Font name="Arial Black" size="20.0" />
+         </font></JFXButton>
+      <JFXButton layoutX="1164.0" layoutY="733.0" onAction="#handleRetour" style="-fx-background-color: #17BEC6; -fx-background-radius: 20;" text="Retour">
+         <font>
+            <Font name="Arial Black" size="20.0" />
+         </font>
+      </JFXButton>
    </children>
 </AnchorPane>

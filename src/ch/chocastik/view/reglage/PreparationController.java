@@ -92,6 +92,10 @@ public class PreparationController {
     	// on affiche la suite
     	this.mainApp.showAnalyse(choiceCam);
     }
+    @FXML
+    void handlerHelp(ActionEvent event) {
+    	mainApp.showHelp(1, 4);
+    }
 
     
     // ============ Methode pour la gestion de la souris ================ //
@@ -231,9 +235,9 @@ public class PreparationController {
 			//rien n'a été selectionnée
 			Alert alert = new Alert(AlertType.WARNING);
 		    alert.initOwner(mainApp.getPrimaryStage());
-		    alert.setTitle("No Selection");
-	        alert.setHeaderText("No Mobile Selected"); 
-	        alert.setContentText("Please select a Mobile in the table.");
+		    alert.setTitle("Pas de sélection");
+	        alert.setHeaderText("Pas de mobile sélectionné"); 
+	        alert.setContentText("Veuillez sélectionner un mobile sur la table.");
 	        alert.showAndWait();
 		}
 		

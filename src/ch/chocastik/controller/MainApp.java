@@ -26,6 +26,7 @@ import ch.chocastik.view.accueil.AccueilController;
 import ch.chocastik.view.analyse.AddGlisseurController;
 
 import ch.chocastik.view.analyse.AnalyseController;
+import ch.chocastik.view.help.HelphController;
 import ch.chocastik.view.reglage.PreparationController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -125,6 +126,7 @@ public class MainApp extends Application {
 	        controleur.setDialogueStage(dialogueStage);
 	        controleur.setFrame(frame);
 	        controleur.setMobile(mobile);
+	        controleur.setMainApp(this);
 	        dialogueStage.showAndWait();
 	        return controleur.isOkClicked();
 		}catch(Exception e) {
@@ -133,7 +135,25 @@ public class MainApp extends Application {
 		}
 	}
 
-	
+	public void showHelp(int indexStart, int indexStop) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("/ch/chocastik/view/help/HelpFX.fxml"));
+			AnchorPane page = (AnchorPane) loader.load();
+			Stage dialogueStage = new Stage();
+			dialogueStage.setTitle("Help");
+			dialogueStage.initModality(Modality.WINDOW_MODAL);
+			dialogueStage.initOwner(primaryStage);
+	        Scene scene = new Scene(page);
+	        dialogueStage.setScene(scene);
+	        HelphController controleur = loader.getController();
+	        controleur.setDialogueStage(dialogueStage);
+	        controleur.setIndex(indexStart, indexStop);
+	        dialogueStage.showAndWait();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	
 	

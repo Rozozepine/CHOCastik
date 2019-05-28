@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="816.0" prefWidth="1287.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.analyse.AddGlisseurController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="816.0" prefWidth="1287.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.chocastik.view.analyse.AddGlisseurController">
    <children>
       <Label layoutX="359.0" layoutY="49.0" text="Modifier Un Glisseur">
          <font>
@@ -101,7 +101,7 @@
             </Label>
          </children>
       </GridPane>
-      <ImageView fx:id="ColorFrame" fitHeight="360.0" fitWidth="640.0" layoutX="567.0" layoutY="231.0" onMouseClicked="#choiceColor" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="ColorFrame" fitHeight="360.0" fitWidth="640.0" layoutX="567.0" layoutY="231.0" onMouseClicked="#choiceColor" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" pickOnBounds="true" preserveRatio="true" />
       <Group layoutX="1122.0" layoutY="14.0">
          <children>
             <ImageView fitHeight="142.0" fitWidth="151.0" pickOnBounds="true" preserveRatio="true">
@@ -114,7 +114,7 @@
                   <Font name="Arial Black" size="33.0" />
                </font>
             </Label>
-            <JFXButton layoutX="11.0" layoutY="42.0" prefHeight="72.0" prefWidth="109.0" text=" " />
+            <JFXButton layoutX="11.0" layoutY="42.0" onAction="#handlerHelp" prefHeight="72.0" prefWidth="109.0" text=" " />
          </children>
       </Group>
    </children>

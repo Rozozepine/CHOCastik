@@ -10,6 +10,7 @@ import javax.naming.InitialContext;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
@@ -23,6 +24,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import ch.chocastik.controller.MainApp;
 import ch.chocastik.model.analyse.objet.*;
 
 public class AddGlisseurController {
@@ -51,6 +53,7 @@ public class AddGlisseurController {
 	private Image frame;
 	double ratioX = 1920/640; 
     double ratioY = 1080/360;
+	private MainApp mainApp;
 
     public AddGlisseurController() {
     }
@@ -84,6 +87,9 @@ public class AddGlisseurController {
 		ColorFrame.setImage(frame);
 		
 	}
+	public void setMainApp(MainApp mainApp) {
+        this.mainApp = mainApp;
+	}
 	public boolean isOkClicked() {
 		return okClicked;
 	}
@@ -94,4 +100,20 @@ public class AddGlisseurController {
     	PixelReader pixelReader = frame.getPixelReader(); 
     	this.InitalColor.setValue(pixelReader.getColor((int) x, 1080 - (int) y)); 
     }
+    @FXML
+    void handlerHelp(ActionEvent event) {
+    	mainApp.showHelp(5, 6);
+    }
+    
+    @FXML
+    void handleMouseEntered(MouseEvent event) {
+    	ColorFrame.setCursor(Cursor.CROSSHAIR);
+    	
+    }
+    @FXML
+    void handleMouseExited(MouseEvent event) {
+    	ColorFrame.setCursor(Cursor.DEFAULT);
+    	
+    }
+	
 }

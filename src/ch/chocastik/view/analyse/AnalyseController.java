@@ -111,7 +111,7 @@ public class AnalyseController {
 	private int choiceCam;
 	final Java2DFrameConverter converter = new Java2DFrameConverter();
 	final OpenCVFrameConverter.ToIplImage converterToIplImage = new OpenCVFrameConverter.ToIplImage();
-	private VideoInputFrameGrabber grabber;
+	private FrameGrabber grabber;
 	private long startTime;
 	private boolean verifExport = true;
 	IplImage iplImage;
@@ -199,6 +199,10 @@ public class AnalyseController {
 		}
 		
 	}
+	@FXML
+    void handlerHelp(ActionEvent event) {
+    	mainApp.showHelp(7,9);
+    }
 	
     // ============ Methode Camera ================ //
     
@@ -207,11 +211,14 @@ public class AnalyseController {
        if(mainApp.getThreadCaptureFlag()) {
     	   mainApp.setThreadCaptureFlag(false);
     	   this.Startvideo.setText("Start Capture");
+    	   this.Startvideo.setStyle("-fx-background-color: #27AEB6; -fx-background-radius:20"); 
+    	   
        }else {
     	   this.threadCam();
     	   mainApp.setThreadCaptureFlag(true);
     	   playThread.start();
     	   this.Startvideo.setText("Stop Capture");
+    	   this.Startvideo.setStyle("-fx-background-color: #ff0000; -fx-background-radius:20");
        }
     }
 
@@ -238,7 +245,6 @@ public class AnalyseController {
 	              	 Thread.sleep(14);	   
 	               }
 	              grabber.stop();
-	              grabber.release();
 	              executor.shutdownNow();
 	              executor.awaitTermination(10, TimeUnit.SECONDS);
 	  		   } catch (Exception e) {
@@ -256,7 +262,10 @@ public class AnalyseController {
     void startAnalyse() {
     	if(mainApp.getThreadAnalyseFlag()) {
     		mainApp.setThreadAnalyseFlag(false);
-    		this.StartAnalyse.setText("Start Analyse");	
+    		this.StartAnalyse.setText("Start Analyse");
+	    	   this.StartAnalyse.setStyle("-fx-background-color: #27AEB6; -fx-background-radius:20");
+
+    		
     	}else {
     		
     		if(mainApp.getAnalyseEndFlag()) {
@@ -268,9 +277,12 @@ public class AnalyseController {
         			mainApp.setThreadAnalyseFlag(true);
         			analyseThread.start();
         			this.StartAnalyse.setText("Stop Analyse");
+        	    	   this.StartAnalyse.setStyle("-fx-background-color: #ff0000; -fx-background-radius:20");
+
         			this.verifExport = true;
+        			
         		}else {
-        			messageErreur("Pas de sÃ©lection", "Pas de mobile sÃ©lectionnÃ©", "Veuillez sÃ©lectionner un mobile sur la table.");
+        			messageErreur("Pas de sélection", "Pas de mobile sélectionné", "Veuillez sélectionner un mobile sur la table.");
         		}
     		}else {
     			messageErreur("Analyse en cours", "Analyse en cours", "Une analyse est deja en cours");
@@ -295,7 +307,7 @@ public class AnalyseController {
 		if(selectMobile != null)
 			tableMobile.getItems().remove(selectMobile);
 		else
-			messageErreur("Pas de sÃ©lection", "Pas de mobile sÃ©lectionnÃ©", "Veuillez sÃ©lectionner un mobile sur la table.");
+			messageErreur("Pas de sélection", "Pas de mobile sélectionné", "Veuillez sélectionner un mobile sur la table.");
 	}
 	/**
 	 * Action lancee lorsque l'utilisateur clique sur le bouton Ajouter
@@ -307,7 +319,7 @@ public class AnalyseController {
 			mainApp.showAddGlisseur(mobile, image); // si il n'y pas d'erreur on l'ajoute
 			this.mainApp.getMobileData().add(mobile);
 		}else {
-			messageErreur("Aucune image disponible", "Aucune image disponible", "Aucune image disponible, veuillez demarrer la capture");
+			messageErreur("Aucune image disponible", "Aucune image disponible", "Aucune image disponible, veuillez démarrer la capture");
 		}
 		
 	}
@@ -322,9 +334,9 @@ public class AnalyseController {
 		if(selectMobile != null && image != null)
 			mainApp.showAddGlisseur(selectMobile, image);
 		else if(image == null) 
-			messageErreur("Aucune image disponible", "Aucune image disponible", "Aucune image disponible, veuillez dÃ©marrer la capture");
+			messageErreur("Aucune image disponible", "Aucune image disponible", "Aucune image disponible, veuillez démarrer la capture");
 		else if(selectMobile != null)
-			messageErreur("Pas de sÃ©lection", "Pas de mobile sÃ©lectionnÃ©", "Veuillez sÃ©lectionner un mobile sur la table.");	
+			messageErreur("Pas de sélection", "Pas de mobile sélectionné", "Veuillez sélectionner un mobile sur la table.");	
 	}
 
   
@@ -348,10 +360,11 @@ public class AnalyseController {
 	/**
 	 * Permet de mettre en place la camera ainsi que le grabber
 	 * @param cam
+	 * @throws Exception 
 	 */
-	public void dsetCameraChoice(int cam) {
+	public void dsetCameraChoice(int cam) throws Exception {
 		this.choiceCam = cam;
-		grabber = new VideoInputFrameGrabber(choiceCam);
+		grabber = FrameGrabber.createDefault(choiceCam);
 		grabber.setFrameRate(60); // frÃ©quence de trame
 		grabber.setImageHeight(1080); // Largeur
 		grabber.setImageWidth(1920); // Hauteur
