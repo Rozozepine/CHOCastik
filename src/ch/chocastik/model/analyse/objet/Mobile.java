@@ -44,7 +44,7 @@ public class Mobile {
     private  int DilateCount = 3;
     private  int maxRad = 20;
     private  int minRad = 12;
-    private int tolHue;
+    private int tolHue = 10;
 
     
 	public Mobile(Color color2, String name) {

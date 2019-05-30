@@ -20,8 +20,8 @@ public class Referentiel {
 		this.setMaxPixelY(maxPixelY);
 	}
 	public boolean checkCordonne(Point point) {
-		if(point.getX() > getMaxPixelX() || point.getY() > getMaxPixelY() || point.getX() < getPixelXOrigine() || point.getY() <getPixelYOrigine())
-			return false;
+		//if(point.getX() > getMaxPixelX() || point.getY() > getMaxPixelY() || point.getX() < getPixelXOrigine() || point.getY() <getPixelYOrigine()) {
+			//return false;
 		return true;
 	}
 	public void transformToNaturalReferentiel(Point point) {

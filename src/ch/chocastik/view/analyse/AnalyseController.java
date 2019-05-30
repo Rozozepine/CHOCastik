@@ -364,7 +364,7 @@ public class AnalyseController {
 	 */
 	public void dsetCameraChoice(int cam) throws Exception {
 		this.choiceCam = cam;
-		grabber = FrameGrabber.createDefault(choiceCam);
+		grabber = VideoInputFrameGrabber.createDefault(choiceCam);
 		grabber.setFrameRate(60); // fréquence de trame
 		grabber.setImageHeight(1080); // Largeur
 		grabber.setImageWidth(1920); // Hauteur

@@ -26,9 +26,9 @@ public class Trajectoire {
 	
 	public void addPoint(Point point) {
 			// on transforme le point pour le passer d'un referentielle a l'orgine en haut a gauche, a en bas a gauche
-			this.referentiel.transformToNaturalReferentiel(point);
+			//this.referentiel.transformToNaturalReferentiel(point);
 			// on transpose le point dans le nouveau referentielle
-			this.referentiel.transformToRelatif(point);
+			//this.referentiel.transformToRelatif(point);
 			// on l'ajoute au graphe
 			Platform.runLater(()->series.getData().add(new XYChart.Data<Number, Number>(point.getX(),point.getY())));
 			// on l'ajoute a la liste des points

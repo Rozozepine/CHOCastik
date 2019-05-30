@@ -56,16 +56,11 @@ public class Analyse implements Runnable {
 		// on indique que l'on commence l'analyse
 		mainApp.setAnalyseEndFlag(false);
 		//tant que le Thread n'est pas stoppe on repete l'action
-		while(mainApp.getThreadAnalyseFlag()) {
+		while(mainApp.getThreadAnalyseFlag() || !pileFrame.isEmpty()) {
 			if(!pileFrame.isEmpty()) 
 				analyseFrame();
 		}
-		// si le thread est stoppe mais que le liste n'est pas vide on la vide
-		if(!mainApp.getThreadAnalyseFlag() && !pileFrame.isEmpty()) {
-			while(!pileFrame.isEmpty()) {
-				analyseFrame();
-			}
-		}
+		// si le thread est stoppe mais que le liste n'est pas vide on la vid
 		// on indique que l'analyse est de nouveau disponnible
 		mainApp.setAnalyseEndFlag(true);
 	}
