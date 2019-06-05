@@ -205,11 +205,7 @@ public class MainApp extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
 		Loader.load(opencv_objdetect.class);
-		Point point = new Point(1, 2, 10);
-		Point point2 = new Point(1, 3, 10);
-		System.out.print(point.equals(point2));
 		launch(args);
 	}
 	public boolean getAnalyseEndFlag() {
